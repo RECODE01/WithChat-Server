@@ -1,0 +1,27 @@
+version: '3.3'
+
+services:
+  cucutoo_server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+
+  postgres-db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: withchat
+      POSTGRES_PASSWORD: withchat
+      POSTGRES_DB: withchat
+    # volumes:
+    #   - /data/postgresql/data:/var/lib/postgresql/data
+    ports:
+      - 5433:5432
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
