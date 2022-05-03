@@ -25,6 +25,7 @@ import { User } from './entities/user.entity';
 import { AuthAccessGuard } from '../auth/gql-auth.guard';
 import { CurrentUser, ICurrentUser } from '../auth/gql-user.param';
 import { UserResult } from './dto/user-result.dto';
+import { LoginResult } from './dto/user-login.dto';
 
 @Controller('users')
 @ApiTags('회원 정보 API')
@@ -53,7 +54,7 @@ export class UsersController {
   })
   @ApiCreatedResponse({
     description: '조회 성공',
-    type: UserResult,
+    type: LoginResult,
   })
   loggedInUser(@Res() res, @CurrentUser() currentUser: ICurrentUser) {
     return this.usersService
