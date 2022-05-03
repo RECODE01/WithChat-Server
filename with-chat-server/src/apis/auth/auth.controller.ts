@@ -33,4 +33,22 @@ export class AuthController {
       res.status(HttpStatus.CREATED).json({ accessToken });
     });
   }
+  // @Get(':id')
+  // findOne(@Param('id') id: string) {
+  //   return this.aService.findOne(+id);
+  // }
+  @Get('/checkEmail:id')
+  @ApiOperation({
+    summary: '메일 인증 API',
+    description: 'API 호출시 회원가입 성공 처리',
+  })
+  @ApiCreatedResponse({
+    description: '회원가입 성공.',
+    type: tokenDto,
+  })
+  checkEmail(@Res() res, @Body() string) {
+    // return this.authService.login(, res).then((accessToken) => {
+    //   res.status(HttpStatus.CREATED).json({ accessToken });
+    // });
+  }
 }

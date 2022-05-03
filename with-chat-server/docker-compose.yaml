@@ -1,7 +1,7 @@
 version: '3.3'
 
 services:
-  cucutoo_server:
+  withchat_server:
     build:
       context: .
       dockerfile: Dockerfile
