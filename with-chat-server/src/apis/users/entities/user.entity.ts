@@ -1,9 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { FriendRequest } from 'src/apis/friend-request/entities/friend-request.entity';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -34,4 +37,11 @@ export class User {
   updatedAt: Date;
   @DeleteDateColumn()
   deletedAt: Date;
+
+  @JoinColumn()
+  @OneToMany((type) => FriendRequest, (req) => req.toUser)
+  receivedFridendReq: FriendRequest[];
+  @JoinColumn()
+  @OneToMany((type) => FriendRequest, (req) => req.fromUser)
+  sentFridendReq: FriendRequest[];
 }

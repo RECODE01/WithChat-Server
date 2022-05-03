@@ -13,10 +13,9 @@ export class UserResult {
       id: '77762ef8-ffdf-4f5d-a36b-dea79fd60aac',
       email: 'asd@asd.asd',
       name: '최건',
-      password: 'asd123!@#',
+      nickName: '최총',
       createdAt: '2022-05-02T02:39:42.161Z',
       updatedAt: '2022-05-02T02:39:42.161Z',
-      deletedAt: null,
     },
   })
   data: User;
