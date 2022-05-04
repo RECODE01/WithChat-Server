@@ -32,6 +32,38 @@ import { LoginResult } from './dto/user-login.dto';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @Get(':userId')
+  @ApiOperation({
+    summary: '유저 정보 조회 API',
+    description: '입력받은 유저ID와 일치하는 유저 정보를 조회한다.',
+  })
+  @ApiCreatedResponse({
+    description: '조회 성공.',
+    type: UserResult,
+  })
+  fetchUserById(@Res() res, @Param('userId') userId: string) {
+    return this.usersService.fetchUserById(userId).then((result) => {
+      const { password, ...user } = result;
+      res.status(HttpStatus.OK).json({ success: true, user: user });
+    });
+  }
+
+  @Get(':email')
+  @ApiOperation({
+    summary: '유저 정보 조회 API',
+    description: '입력받은 email과 일치하는 유저 정보를 조회한다.',
+  })
+  @ApiCreatedResponse({
+    description: '조회 성공.',
+    type: UserResult,
+  })
+  fetchUserByEmail(@Res() res, @Param('email') email: string) {
+    return this.usersService.fetchUserByEmail(email).then((result) => {
+      const { password, ...user } = result;
+      res.status(HttpStatus.OK).json({ success: true, user: user });
+    });
+  }
+
   @Post()
   @ApiOperation({ summary: '회원 가입 API', description: '유저를 생성한다.' })
   @ApiCreatedResponse({
@@ -41,7 +73,7 @@ export class UsersController {
   createUser(@Res() res, @Body() createUserDto: CreateUserDto) {
     return this.usersService.createUser(createUserDto).then((result) => {
       const { password, ...user } = result;
-      res.status(HttpStatus.CREATED).json({ success: true, data: user });
+      res.status(HttpStatus.CREATED).json({ success: true, user: user });
     });
   }
 
@@ -60,7 +92,7 @@ export class UsersController {
     return this.usersService
       .loggedInUser(currentUser)
       .then((user) =>
-        res.status(HttpStatus.CREATED).json({ success: true, data: user }),
+        res.status(HttpStatus.CREATED).json({ success: true, user: user }),
       );
   }
 }
