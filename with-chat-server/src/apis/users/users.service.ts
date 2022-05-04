@@ -21,17 +21,26 @@ export class UsersService {
     return result;
   }
 
+  async fetchUserById(userId: string) {
+    return this.userRepository.findOne({ where: { id: userId } });
+  }
+
+  async fetchUserByEmail(email: any) {
+    return this.userRepository.findOne({ where: { email } });
+  }
+
+  loggedInUser(currentUser: ICurrentUser): Promise<User> {
+    return this.userRepository.findOne({ where: { id: currentUser.id } });
+  }
+  findOne(id: number) {
+    return `This action returns a #${id} user`;
+  }
+
   private async checkUserExists(email: string): Promise<boolean> {
     const user = await this.userRepository.findOne({
       where: { email: email },
     });
     console.log(user);
     return user !== null;
-  }
-  loggedInUser(currentUser: ICurrentUser): Promise<User> {
-    return this.userRepository.findOne({ where: { id: currentUser.id } });
-  }
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
   }
 }

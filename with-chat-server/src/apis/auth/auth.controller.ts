@@ -33,10 +33,7 @@ export class AuthController {
       res.status(HttpStatus.CREATED).json({ accessToken });
     });
   }
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.aService.findOne(+id);
-  // }
+
   @Get('/checkEmail:id')
   @ApiOperation({
     summary: '메일 인증 API',
