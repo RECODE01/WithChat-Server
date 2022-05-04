@@ -17,6 +17,7 @@ import {
   ApiBearerAuth,
   ApiCreatedResponse,
   ApiNotFoundResponse,
+  ApiOkResponse,
   ApiOperation,
   ApiTags,
   ApiUnprocessableEntityResponse,
@@ -37,7 +38,7 @@ export class UsersController {
     summary: '유저 정보 조회 API',
     description: '입력받은 유저ID와 일치하는 유저 정보를 조회한다.',
   })
-  @ApiCreatedResponse({
+  @ApiOkResponse({
     description: '조회 성공.',
     type: UserResult,
   })
@@ -53,7 +54,7 @@ export class UsersController {
     summary: '유저 정보 조회 API',
     description: '입력받은 email과 일치하는 유저 정보를 조회한다.',
   })
-  @ApiCreatedResponse({
+  @ApiOkResponse({
     description: '조회 성공.',
     type: UserResult,
   })
