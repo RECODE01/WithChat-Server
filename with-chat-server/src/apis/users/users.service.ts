@@ -2,6 +2,7 @@ import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ICurrentUser } from '../auth/gql-user.param';
+import { FriendService } from '../friend/friend.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
@@ -10,6 +11,7 @@ import { User } from './entities/user.entity';
 export class UsersService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
+    private readonly friendService: FriendService,
   ) {}
 
   async createUser(createUserDto: CreateUserDto) {
@@ -29,8 +31,12 @@ export class UsersService {
     return this.userRepository.findOne({ where: { email } });
   }
 
-  loggedInUser(currentUser: ICurrentUser): Promise<User> {
-    return this.userRepository.findOne({ where: { id: currentUser.id } });
+  async loggedInUser(currentUser: ICurrentUser) {
+    const friendList = await this.friendService.fetchMyFriends(currentUser);
+    const user = await this.userRepository.findOne({
+      where: { id: currentUser.id },
+    });
+    return { user, friendList };
   }
   findOne(id: number) {
     return `This action returns a #${id} user`;

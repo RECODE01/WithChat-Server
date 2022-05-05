@@ -92,8 +92,8 @@ export class UsersController {
   loggedInUser(@Res() res, @CurrentUser() currentUser: ICurrentUser) {
     return this.usersService
       .loggedInUser(currentUser)
-      .then((user) =>
-        res.status(HttpStatus.CREATED).json({ success: true, user: user }),
+      .then((result) =>
+        res.status(HttpStatus.CREATED).json({ success: true, ...result }),
       );
   }
 }
