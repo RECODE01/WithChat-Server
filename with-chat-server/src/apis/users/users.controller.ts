@@ -9,6 +9,7 @@ import {
   Res,
   HttpStatus,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -33,7 +34,7 @@ import { LoginResult } from './dto/user-login.dto';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Get(':userId')
+  @Get('/byId/:userId')
   @ApiOperation({
     summary: '유저 정보 조회 API',
     description: '입력받은 유저ID와 일치하는 유저 정보를 조회한다.',
@@ -49,7 +50,7 @@ export class UsersController {
     });
   }
 
-  @Get(':email')
+  @Get('/byEmail/:email')
   @ApiOperation({
     summary: '유저 정보 조회 API',
     description: '입력받은 email과 일치하는 유저 정보를 조회한다.',
@@ -92,8 +93,31 @@ export class UsersController {
   loggedInUser(@Res() res, @CurrentUser() currentUser: ICurrentUser) {
     return this.usersService
       .loggedInUser(currentUser)
-      .then((user) =>
-        res.status(HttpStatus.CREATED).json({ success: true, user: user }),
+      .then((result) =>
+        res.status(HttpStatus.CREATED).json({ success: true, ...result }),
+      );
+  }
+
+  @Get('/findEmail')
+  @ApiOperation({
+    summary: 'email 찾기 Api',
+    description: '입력받은 회원정보와 일치하는 email 조회한다.',
+  })
+  @ApiOkResponse({
+    description: '조회 성공',
+    schema: { example: { success: true, emails: ['asd@asd.asd'] } },
+  })
+  findEmail(
+    @Res() res,
+    @Query('name') name: string,
+    @Query('year') year: number,
+    @Query('month') month: number,
+    @Query('day') day: number,
+  ) {
+    return this.usersService
+      .findEmail(name, year, month, day)
+      .then((emails) =>
+        res.status(HttpStatus.OK).json({ success: true, emails }),
       );
   }
 }
