@@ -42,6 +42,28 @@ export class UsersService {
     return `This action returns a #${id} user`;
   }
 
+  async findEmail(
+    name: string,
+    year: number,
+    month: number,
+    day: number,
+  ): Promise<string[]> {
+    console.log(name, year, month, day);
+    console.log('asd');
+    return this.userRepository
+      .find({
+        where: {
+          name: name,
+          year,
+          month,
+          day,
+        },
+      })
+      .then((users) => {
+        return users.map((user) => user.email);
+      });
+  }
+
   private async checkUserExists(email: string): Promise<boolean> {
     const user = await this.userRepository.findOne({
       where: { email: email },
