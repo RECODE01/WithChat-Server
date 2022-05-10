@@ -81,6 +81,8 @@ export class FriendRequestService {
         );
 
       await queryRunner.commitTransaction();
+
+      return true;
     } catch (error) {
       await queryRunner.rollbackTransaction();
       throw error;
