@@ -3,9 +3,7 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
-  Delete,
   Res,
   HttpStatus,
   UseGuards,
@@ -13,17 +11,13 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import {
   ApiBearerAuth,
   ApiCreatedResponse,
-  ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
   ApiTags,
-  ApiUnprocessableEntityResponse,
 } from '@nestjs/swagger';
-import { User } from './entities/user.entity';
 import { AuthAccessGuard } from '../auth/gql-auth.guard';
 import { CurrentUser, ICurrentUser } from '../auth/gql-user.param';
 import { UserResult } from './dto/user-result.dto';
@@ -76,6 +70,19 @@ export class UsersController {
     return this.usersService.createUser(createUserDto).then((result) => {
       const { password, ...user } = result;
       res.status(HttpStatus.CREATED).json({ success: true, user: user });
+    });
+  }
+
+  @Get('/verification?')
+  verification(
+    @Res() res,
+    @Query('email') email: string,
+    @Query('token') token: string,
+  ) {
+    return this.usersService.verification(email, token).then((_) => {
+      res
+        .status(HttpStatus.CREATED)
+        .json({ success: true, message: '회원가입 완료' });
     });
   }
 

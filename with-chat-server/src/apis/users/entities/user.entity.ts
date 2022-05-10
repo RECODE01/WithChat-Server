@@ -10,6 +10,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { CreateUserDto } from '../dto/create-user.dto';
 
 @Entity()
 export class User {
@@ -46,6 +47,9 @@ export class User {
   @Column({ type: 'smallint', default: 1 })
   day: number;
 
+  @Column({ type: 'boolean', default: false })
+  certified: boolean;
+
   @CreateDateColumn()
   @ApiProperty({ description: '회원가입 일시' })
   createdAt: Date;
@@ -64,4 +68,29 @@ export class User {
   @JoinColumn()
   @OneToMany((type) => FriendRequest, (req) => req.fromUser)
   sentFridendReq: FriendRequest[];
+}
+
+@Entity()
+export class Token {
+  // constructor({ email, value, type }) {
+  //   this.email = email;
+  //   this.value = value;
+  //   this.type = type;
+  // }
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+
+  @Column({ type: 'varchar', length: 30 })
+  email: string;
+
+  @Column({ type: 'varchar', length: 30, nullable: true })
+  value: string;
+
+  @Column({ type: 'varchar', length: 30 })
+  type: string;
+
+  @CreateDateColumn()
+  createdAt: Date;
+  // @Column({ type: 'timestamp' })
+  // exp: Date;
 }
