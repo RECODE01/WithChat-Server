@@ -73,7 +73,7 @@ export class UsersController {
     });
   }
 
-  @Get('/verification?')
+  @Get('/verification')
   verification(
     @Res() res,
     @Query('email') email: string,

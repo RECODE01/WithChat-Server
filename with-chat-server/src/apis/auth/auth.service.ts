@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { loginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '../users/entities/user.entity';
@@ -50,6 +54,8 @@ export class AuthService {
       throw new UnauthorizedException('일치하는 계정 정보가 없습니다.');
     if (user.password !== loginDto.password)
       throw new UnauthorizedException('비밀번호가 일치하지 않습니다.');
+    if (user.certified === false)
+      throw new ForbiddenException('이메일 인증을 완료해 주세요.');
     await this.setRefreshToken(user, res);
     return this.getAccessToken(user);
   }
