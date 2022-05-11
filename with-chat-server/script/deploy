@@ -1,6 +1,5 @@
 #!/bin/sh
-cd ~/WithChat-Server/with-chat-server; <<EOF		
-    git pull origin master;
-    npm install;
-    pm2 restart npm;
+cd ~/WithChat-Server/with-chat-server <<EOF		
+    git pull origin master
+    pm2 restart npm
 EOF
