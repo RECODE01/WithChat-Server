@@ -1,0 +1,6 @@
+#!/bin/sh
+cd ~/WITHCHAT/with-chat-server <<EOF		
+    git pull origin master
+    npm install
+    pm2 restart npm
+EOF
