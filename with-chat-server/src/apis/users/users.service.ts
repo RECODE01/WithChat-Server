@@ -19,7 +19,8 @@ import * as nodemailer from 'nodemailer';
 export class UsersService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
-    @InjectRepository(User) private readonly tokenRepository: Repository<Token>,
+    @InjectRepository(Token)
+    private readonly tokenRepository: Repository<Token>,
     private readonly friendService: FriendService,
     private readonly connection: Connection,
   ) {}
@@ -73,8 +74,12 @@ export class UsersService {
         to: createUserDto.email,
         from: process.env.MAILER_FROM,
         subject: '이메일 인증 요청 메일입니다.',
-        html: `WithChat 회원가입 인증 메일입니다.<br/>
-             <button onclick="location.href ='https://backend.withchat.site/user/verification?email=${createUserDto.email}&token=${token}'>회원가입<button/>`,
+        html: `
+             <!DOCTYPE html>
+             <div>
+             <a>WithChat 회원가입 인증 메일입니다.</a><br/>
+             <a href='https://backend.withchat.site/user/verification?email=${createUserDto.email}&token=${token}'>회원가입</a>
+             </div>`,
       });
 
       await queryRunner.commitTransaction();
