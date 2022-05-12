@@ -1,4 +1,4 @@
-ssh -t -t withchat01@db.withchat.site <<EOF
+ssh withchat01@db.withchat.site <<EOF
     cd WithChat-Server/with-chat-server	
     git pull origin master
     npm install
