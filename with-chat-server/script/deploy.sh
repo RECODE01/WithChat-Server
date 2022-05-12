@@ -1,7 +1,8 @@
-#!/bin/sh
-ssh withchat01@gmail.com@34.64.219.134 <<EOF
-    cd ~/WithChat-Server/with-chat-server
+ssh withchat01@db.withchat.site <<EOF
+    cd WithChat-Server/with-chat-server	
     git pull origin master
+    npm install
     pm2 restart npm
     exit
 EOF
+# test
