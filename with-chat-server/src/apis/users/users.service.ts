@@ -1,5 +1,6 @@
 import { MailerService } from '@nestjs-modules/mailer';
 import {
+  ConflictException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -229,6 +230,25 @@ export class UsersService {
       { password: updatePasswordDto.newPassword },
     );
 
+    return result.affected > 0;
+  }
+
+  async updateUser(
+    updateUserDto: UpdateUserDto,
+    currentUser: ICurrentUser,
+  ): Promise<User> {
+    const result = await this.userRepository.update(
+      { id: currentUser.id },
+      { ...updateUserDto },
+    );
+
+    if (result.affected < 0) throw new ConflictException('회원정보 수정 실패');
+
+    return this.userRepository.findOne({ where: { id: currentUser.id } });
+  }
+
+  async deleteUser(currentUser: ICurrentUser): Promise<boolean> {
+    const result = await this.userRepository.softDelete({ id: currentUser.id });
     return result.affected > 0;
   }
 }
