@@ -10,6 +10,7 @@ import {
   Query,
   Patch,
   ConflictException,
+  Delete,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -24,6 +25,7 @@ import { AuthAccessGuard } from '../auth/gql-auth.guard';
 import { CurrentUser, ICurrentUser } from '../auth/gql-user.param';
 import { UserResult } from './dto/user-result.dto';
 import { LoginResult } from './dto/user-login.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('users')
 @ApiTags('회원 정보 API')
@@ -180,5 +182,48 @@ export class UsersController {
           .status(HttpStatus.OK)
           .json({ success: true, message: '비밀번호 변경 성공' });
       });
+  }
+
+  @UseGuards(AuthAccessGuard)
+  @Patch('')
+  @ApiOperation({
+    summary: '회원정보 수정 API',
+    description: '입력받은 회원정보로 변경',
+  })
+  @ApiOkResponse({
+    description: '수정 성공',
+    type: UserResult,
+  })
+  updateUser(
+    @Res() res,
+    @Body() updateUserDto: UpdateUserDto,
+    @CurrentUser() currentUser: ICurrentUser,
+  ) {
+    return this.usersService
+      .updateUser(updateUserDto, currentUser)
+      .then((result) => {
+        if (!result) throw new ConflictException('회원정보 수정 실패');
+        const { password, ...user } = result;
+        return res.status(HttpStatus.OK).json({ success: true, user: user });
+      });
+  }
+
+  @UseGuards(AuthAccessGuard)
+  @Delete('')
+  @ApiOperation({
+    summary: '회원정보 삭제 API',
+    description: '로그인중인 회원 정보 삭제',
+  })
+  @ApiOkResponse({
+    description: '삭제 성공',
+    schema: { example: { success: true, message: '회원정보 삭제 성공' } },
+  })
+  deleteUser(@Res() res, @CurrentUser() currentUser: ICurrentUser) {
+    return this.usersService.deleteUser(currentUser).then((result) => {
+      if (!result) throw new ConflictException('비밀번호 변경 실패');
+      return res
+        .status(HttpStatus.OK)
+        .json({ success: true, message: '비밀번호 변경 성공' });
+    });
   }
 }
