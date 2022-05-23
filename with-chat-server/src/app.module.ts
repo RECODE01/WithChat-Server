@@ -7,6 +7,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { FriendModule } from './apis/friend/friend.module';
 import { FriendRequestModule } from './apis/friend-request/friend-request.module';
 import { ConfigModule } from '@nestjs/config';
+import { FileModule } from './apis/file/file.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -29,6 +30,7 @@ import { ConfigModule } from '@nestjs/config';
     }),
     FriendModule,
     FriendRequestModule,
+    FileModule,
   ],
   controllers: [AppController],
   providers: [AppService],
