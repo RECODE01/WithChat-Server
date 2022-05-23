@@ -3,4 +3,4 @@ WORKDIR /WITHCHAT-SERVER
 COPY . /WITHCHAT-SERVER/
 
 RUN npm install
-CMD npm run start:dev  
+CMD npm run dev:local  

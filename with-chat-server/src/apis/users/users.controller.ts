@@ -220,10 +220,10 @@ export class UsersController {
   })
   deleteUser(@Res() res, @CurrentUser() currentUser: ICurrentUser) {
     return this.usersService.deleteUser(currentUser).then((result) => {
-      if (!result) throw new ConflictException('비밀번호 변경 실패');
+      if (!result) throw new ConflictException('회원정보 삭제 실패');
       return res
         .status(HttpStatus.OK)
-        .json({ success: true, message: '비밀번호 변경 성공' });
+        .json({ success: true, message: '회원정보 삭제 성공' });
     });
   }
 }
