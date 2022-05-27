@@ -170,7 +170,6 @@ export class UsersService {
     await queryRunner.connect();
     await queryRunner.startTransaction('SERIALIZABLE');
     try {
-      // const result = this.userRepository.save({ ...createUserDto });
       const token = uuidv4();
       const tokenInfo = new Token();
       tokenInfo.email = resetPwdSendMailDTO.email;
