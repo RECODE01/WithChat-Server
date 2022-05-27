@@ -9,9 +9,7 @@ import { FriendRequestModule } from './apis/friend-request/friend-request.module
 import { ConfigModule } from '@nestjs/config';
 import { FileModule } from './apis/file/file.module';
 import { ChattingRoomModule } from './apis/chatting-room/chatting-room.module';
-import { ChatGateway } from './chat.gateway';
 import { ChattingRoomInviteModule } from './apis/chatting-room-invite/chatting-room-invite.module';
-
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -39,6 +37,6 @@ import { ChattingRoomInviteModule } from './apis/chatting-room-invite/chatting-r
     ChattingRoomInviteModule,
   ],
   controllers: [AppController],
-  providers: [AppService, ChatGateway],
+  providers: [AppService],
 })
 export class AppModule {}
