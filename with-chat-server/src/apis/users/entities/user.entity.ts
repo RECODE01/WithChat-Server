@@ -91,6 +91,4 @@ export class Token {
 
   @CreateDateColumn()
   createdAt: Date;
-  // @Column({ type: 'timestamp' })
-  // exp: Date;
 }
