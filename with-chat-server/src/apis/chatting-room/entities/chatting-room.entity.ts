@@ -27,10 +27,6 @@ export class ChattingRoom {
   @ApiProperty({ description: '채팅방 이름', example: '채팅방1' })
   name: string;
 
-  @JoinColumn()
-  @ManyToOne((type) => User, (user) => user.id)
-  master: User;
-
   @Column({ type: 'varchar', length: 100, nullable: true })
   @ApiProperty({
     description: '채팅방 이미지',
@@ -66,7 +62,15 @@ export class ChattingRoomUsersDetail {
   @JoinColumn()
   @ManyToOne((type) => ChattingRoom, (master) => master.id)
   master: ChattingRoom;
+
   @JoinColumn()
   @ManyToOne((type) => User, (user) => user.id)
   user: User;
+
+  @Column({ type: 'int' })
+  @ApiProperty({
+    description: '채팅방 권한 / 0-master, 1-admin, 2-user',
+    example: '0',
+  })
+  auth: number;
 }
