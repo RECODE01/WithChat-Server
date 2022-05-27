@@ -28,7 +28,7 @@ export class ChattingRoom {
   name: string;
 
   @JoinColumn()
-  @OneToOne((type) => User, (user) => user.id)
+  @ManyToOne((type) => User, (user) => user.id)
   master: User;
 
   @Column({ type: 'varchar', length: 100, nullable: true })
