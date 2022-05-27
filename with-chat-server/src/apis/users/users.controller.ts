@@ -146,12 +146,9 @@ export class UsersController {
     @Res() res,
     @Query('email') email: string,
     @Query('name') name: string,
-    @Query('year') year: number,
-    @Query('month') month: number,
-    @Query('day') day: number,
   ) {
     return this.usersService
-      .sendMail({ email, name, year, month, day })
+      .sendMail({ email, name })
       .then((_) =>
         res
           .status(HttpStatus.OK)
