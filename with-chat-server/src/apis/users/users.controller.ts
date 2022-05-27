@@ -64,7 +64,9 @@ export class UsersController {
     });
   }
 
+  @UseGuards(AuthAccessGuard)
   @Get('/search')
+  @ApiBearerAuth('access-token')
   @ApiOperation({
     summary: '유저 정보 검색 API',
     description:
@@ -74,8 +76,12 @@ export class UsersController {
     description: '검색 성공.',
     type: UserResult,
   })
-  searchUser(@Res() res, @Query('keyword') keyword: string) {
-    return this.usersService.searchUser(keyword).then((result) => {
+  searchUser(
+    @Res() res,
+    @Query('keyword') keyword: string,
+    @CurrentUser() currentUser: ICurrentUser,
+  ) {
+    return this.usersService.searchUser(keyword, currentUser).then((result) => {
       res.status(HttpStatus.OK).json({ success: true, searchResult: result });
     });
   }
