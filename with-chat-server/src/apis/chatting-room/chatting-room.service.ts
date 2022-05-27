@@ -28,13 +28,14 @@ export class ChattingRoomService {
     const master = await this.userRepository.findOne({
       where: { id: currentUser.id },
     });
+
     const result = await this.chattingRoomRepository.save({
       ...createChattingRoomDto,
-      master,
     });
 
     const users = await this.chattingRoomUsersDetailRepository.save({
       user: master,
+      auth: 0,
     });
 
     return { ...result, users: [users] };
