@@ -221,12 +221,13 @@ export class UsersService {
       .andWhere('token.type = :type', { type: 'resetPassword' })
       .orderBy('token.createdAt', 'DESC')
       .getOne();
-
     if (!isValid) throw new UnauthorizedException('권한이 없습니다.');
+
+    const salt = await bcrypt.genSalt();
 
     const result = await this.userRepository.update(
       { email: updatePasswordDto.email },
-      { password: updatePasswordDto.newPassword },
+      { password: await bcrypt.hash(updatePasswordDto.newPassword, salt) },
     );
 
     return result.affected > 0;
@@ -249,5 +250,18 @@ export class UsersService {
   async deleteUser(currentUser: ICurrentUser): Promise<boolean> {
     const result = await this.userRepository.softDelete({ id: currentUser.id });
     return result.affected > 0;
+  }
+
+  async searchUser(keyword: string) {
+    const result = await this.userRepository
+      .createQueryBuilder('users')
+      .where(`users.name LIKE '%'||:keyword||'%'`, {
+        keyword,
+      })
+      .orWhere(`users.nickName LIKE '%'||:keyword||'%'`, { keyword })
+      .orWhere(`users.email LIKE '%'||:keyword||'%'`, { keyword })
+      .getMany();
+    console.log(result);
+    return result;
   }
 }

@@ -28,16 +28,30 @@ export class ChattingRoomService {
     const master = await this.userRepository.findOne({
       where: { id: currentUser.id },
     });
-
+    console.log(master);
     const result = await this.chattingRoomRepository.save({
       ...createChattingRoomDto,
     });
 
     const users = await this.chattingRoomUsersDetailRepository.save({
+      master: result,
       user: master,
       auth: 0,
     });
 
     return { ...result, users: [users] };
+  }
+
+  async fetchMyChattingRoom(currentUser: ICurrentUser) {
+    const result = await this.chattingRoomRepository
+      .createQueryBuilder('chattingRoom')
+      .leftJoin('chattingRoom.users', 'chattingRoomUserDetail')
+      .where('chattingRoomUserDetail.user = :userId', {
+        userId: currentUser.id,
+      })
+      .getMany();
+
+    console.log(result);
+    return result;
   }
 }
