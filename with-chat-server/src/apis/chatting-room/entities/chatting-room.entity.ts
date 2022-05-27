@@ -64,7 +64,7 @@ export class ChattingRoomUsersDetail {
   master: ChattingRoom;
 
   @JoinColumn()
-  @ManyToOne((type) => User, (user) => user.id)
+  @ManyToOne((type) => User, (user) => user.id, { eager: true })
   user: User;
 
   @Column({ type: 'int' })
