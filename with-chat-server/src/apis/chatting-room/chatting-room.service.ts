@@ -33,8 +33,7 @@ export class ChattingRoomService {
       master,
     });
 
-    const users = this.chattingRoomUsersDetailRepository.save({
-      master: result,
+    const users = await this.chattingRoomUsersDetailRepository.save({
       user: master,
     });
 
