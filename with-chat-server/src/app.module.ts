@@ -8,6 +8,7 @@ import { FriendModule } from './apis/friend/friend.module';
 import { FriendRequestModule } from './apis/friend-request/friend-request.module';
 import { ConfigModule } from '@nestjs/config';
 import { FileModule } from './apis/file/file.module';
+import { ChattingRoomModule } from './apis/chatting-room/chatting-room.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -31,6 +32,7 @@ import { FileModule } from './apis/file/file.module';
     FriendModule,
     FriendRequestModule,
     FileModule,
+    ChattingRoomModule,
   ],
   controllers: [AppController],
   providers: [AppService],
