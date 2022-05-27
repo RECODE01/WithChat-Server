@@ -221,12 +221,13 @@ export class UsersService {
       .andWhere('token.type = :type', { type: 'resetPassword' })
       .orderBy('token.createdAt', 'DESC')
       .getOne();
-
     if (!isValid) throw new UnauthorizedException('권한이 없습니다.');
+
+    const salt = await bcrypt.genSalt();
 
     const result = await this.userRepository.update(
       { email: updatePasswordDto.email },
-      { password: updatePasswordDto.newPassword },
+      { password: await bcrypt.hash(updatePasswordDto.newPassword, salt) },
     );
 
     return result.affected > 0;
