@@ -28,6 +28,13 @@ export class User {
   @ApiProperty({ description: '유저 이름', example: '최건' })
   name: string;
 
+  @Column({ type: 'varchar', length: 80, nullable: true })
+  @ApiProperty({
+    description: '프로필 이미지',
+    example: 'https://google.storage.com/api/asdasdasd',
+  })
+  picture: string;
+
   @Column({ type: 'varchar', length: 30, unique: true })
   @ApiProperty({ description: '유저 닉네임', example: '최총' })
   nickName: string;

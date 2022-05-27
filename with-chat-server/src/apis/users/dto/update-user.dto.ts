@@ -9,4 +9,7 @@ export class UpdateUserDto {
 
   @ApiProperty({ description: '닉네임', example: '최총' })
   nickName: string;
+
+  @ApiProperty({ description: '프로필 이미지', example: '이미지 url' })
+  picture: string;
 }
