@@ -64,6 +64,22 @@ export class UsersController {
     });
   }
 
+  @Get('/search')
+  @ApiOperation({
+    summary: '유저 정보 검색 API',
+    description:
+      'email, nickname에 입력 받은 keyword를 포함하는 유저 정보 목록 반환',
+  })
+  @ApiOkResponse({
+    description: '검색 성공.',
+    type: UserResult,
+  })
+  searchUser(@Res() res, @Query('keyword') keyword: string) {
+    return this.usersService.searchUser(keyword).then((result) => {
+      res.status(HttpStatus.OK).json({ success: true, searchResult: result });
+    });
+  }
+
   @Post()
   @ApiOperation({ summary: '회원 가입 API', description: '유저를 생성한다.' })
   @ApiCreatedResponse({
