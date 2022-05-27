@@ -7,7 +7,7 @@ import {
 } from '@nestjs/websockets';
 import { Socket, Server } from 'socket.io';
 
-@WebSocketGateway(81, {
+@WebSocketGateway(80, {
   cors: {
     origin: ['http://localhost:3000/'],
   },
@@ -17,8 +17,12 @@ export class ChatGateway {
   @WebSocketServer()
   server: Server;
 
-  handleConnection(client: Socket) {}
-
+  handleConnection(client: Socket) {
+    console.log('a');
+  }
+  handleError(clicen: Socket) {
+    console.log('aaa');
+  }
   handleDisconnect(client: Socket) {}
 
   @SubscribeMessage('hihi')

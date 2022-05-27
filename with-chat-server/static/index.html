@@ -15,7 +15,7 @@
     <script src="https://cdn.socket.io/socket.io-2.3.1.js"></script>
 
     <script>
-      const socket = io('ws://localhost:81/chat');
+      const socket = io('ws://localhost:80/chat');
       const nickname = prompt('닉네임을 알려주세요.');
       if (!nickname) {
         window.location.reload();
