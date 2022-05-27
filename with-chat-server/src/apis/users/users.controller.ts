@@ -108,7 +108,7 @@ export class UsersController {
   }
 
   @UseGuards(AuthAccessGuard)
-  @Post('loggedInUser')
+  @Get('loggedInUser')
   @ApiBearerAuth('access-token')
   @ApiOperation({
     summary: '로그인 유저 정보 조회 API',
