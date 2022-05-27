@@ -18,10 +18,19 @@ import * as bcrypt from 'bcrypt';
 import * as nodemailer from 'nodemailer';
 import { FindEmailDto } from './dto/find-email.dto';
 import { ResetPwdSendMailDTO, UpdatePwdDTO } from './dto/reset-password.dto';
+import { FriendRequest } from '../friend-request/entities/friend-request.entity';
+import { ChattingRoom } from '../chatting-room/entities/chatting-room.entity';
+import { ChattingRoomInvite } from '../chatting-room-invite/entities/chatting-room-invite.entity';
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
+    @InjectRepository(FriendRequest)
+    private readonly friendRequestRepository: Repository<FriendRequest>,
+    @InjectRepository(ChattingRoom)
+    private readonly chattingRoomRepository: Repository<ChattingRoom>,
+    @InjectRepository(ChattingRoomInvite)
+    private readonly chattingRoomInviteRepository: Repository<ChattingRoomInvite>,
     @InjectRepository(Token)
     private readonly tokenRepository: Repository<Token>,
     private readonly friendService: FriendService,
@@ -125,14 +134,40 @@ export class UsersService {
   };
 
   loggedInUser = async (currentUser: ICurrentUser) => {
-    const friendList = await this.friendService.fetchMyFriends(currentUser);
-    const user = await this.userRepository.findOne({
+    const user = this.userRepository.findOne({
       where: { id: currentUser.id },
     });
-    return { user, friendList };
-  };
-  findOne = async (id: number) => {
-    return `This action returns a #${id} user`;
+    const friendList = this.friendService.fetchMyFriends(currentUser);
+    const friendRequestList = this.friendRequestRepository.find({
+      where: { toUser: { id: currentUser.id }, isAccepted: false },
+    });
+    const inviteList = this.chattingRoomInviteRepository.find({
+      where: { user: { id: currentUser.id }, isAccepted: false },
+    });
+    const serverList = this.chattingRoomRepository
+      .createQueryBuilder('chattingRoom')
+      .leftJoin('chattingRoom.users', 'chattingRoomUserDetail')
+      .where('chattingRoomUserDetail.user = :userId', {
+        userId: currentUser.id,
+      })
+      .getMany();
+
+    const result = await Promise.all([
+      user,
+      friendList,
+      friendRequestList,
+      inviteList,
+      serverList,
+    ]).then((values) => {
+      return {
+        user: values[0],
+        friendList: values[1],
+        friendRequestList: values[2],
+        inviteList: values[3],
+        serverList: values[4],
+      };
+    });
+    return result;
   };
 
   findEmail = async (findEmailDto: FindEmailDto): Promise<string> => {
