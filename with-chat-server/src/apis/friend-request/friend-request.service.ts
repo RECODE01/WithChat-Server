@@ -79,9 +79,7 @@ export class FriendRequestService {
         throw new InternalServerErrorException(
           '서버 오류가 발생하였습니다.\r\n 다시 시도해 주세요',
         );
-
       await queryRunner.commitTransaction();
-
       return true;
     } catch (error) {
       await queryRunner.rollbackTransaction();

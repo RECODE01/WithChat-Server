@@ -1,6 +1,8 @@
 import { MailerService } from '@nestjs-modules/mailer';
 import {
+  ConflictException,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
   UnprocessableEntityException,
 } from '@nestjs/common';
@@ -12,9 +14,10 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Token, User } from './entities/user.entity';
 import { v4 as uuidv4 } from 'uuid';
-// import { nodemailer } from 'nodemailer';
+import * as bcrypt from 'bcrypt';
 import * as nodemailer from 'nodemailer';
-// const nodemailer = require('nodemailer');
+import { FindEmailDto } from './dto/find-email.dto';
+import { ResetPwdSendMailDTO, UpdatePwdDTO } from './dto/reset-password.dto';
 @Injectable()
 export class UsersService {
   constructor(
@@ -36,12 +39,16 @@ export class UsersService {
     await queryRunner.startTransaction('SERIALIZABLE');
     try {
       // const result = this.userRepository.save({ ...createUserDto });
+      const salt = await bcrypt.genSalt();
+      console.log(salt);
+
       const user = new User();
       user.email = createUserDto.email;
       user.name = createUserDto.name;
       user.password = createUserDto.password;
       user.nickName = createUserDto.nickName;
       user.year = createUserDto.year;
+      user.password = await bcrypt.hash(createUserDto.password, salt);
       user.month = createUserDto.month;
       user.day = createUserDto.day;
       const result = await queryRunner.manager.save(user);
@@ -52,9 +59,6 @@ export class UsersService {
       tokenInfo.value = token;
       tokenInfo.type = 'signup';
       await queryRunner.manager.save(tokenInfo);
-
-      console.log(createUserDto.email);
-      console.log(process.env.MAILER_FROM);
 
       const transporter = nodemailer.createTransport({
         service: 'gmail',
@@ -78,7 +82,7 @@ export class UsersService {
              <!DOCTYPE html>
              <div>
              <a>WithChat 회원가입 인증 메일입니다.</a><br/>
-             <a href='https://backend.withchat.site/user/verification?email=${createUserDto.email}&token=${token}'>회원가입</a>
+             <a href='https://backend.withchat.site/users/verification?email=${createUserDto.email}&token=${token}'>회원가입</a>
              </div>`,
       });
 
@@ -96,6 +100,7 @@ export class UsersService {
     const storedToken = await this.tokenRepository
       .createQueryBuilder('token')
       .where('token.email = :email', { email })
+      .andWhere('token.type = :type', { type: 'signup' })
       .orderBy('token.createdAt', 'DESC')
       .getOne();
 
@@ -130,26 +135,19 @@ export class UsersService {
     return `This action returns a #${id} user`;
   };
 
-  findEmail = async (
-    name: string,
-    year: number,
-    month: number,
-    day: number,
-  ): Promise<string[]> => {
-    console.log(name, year, month, day);
-    console.log('asd');
-    return this.userRepository
-      .find({
+  findEmail = async (findEmailDto: FindEmailDto): Promise<string> => {
+    const email = await this.userRepository
+      .findOne({
         where: {
-          name: name,
-          year,
-          month,
-          day,
+          ...findEmailDto,
         },
       })
-      .then((users) => {
-        return users.map((user) => user.email);
+      .then((user) => {
+        return user ? user.email : '';
       });
+    if (!email)
+      throw new NotFoundException('일치하는 email이 존재하지 않습니다.');
+    return email;
   };
 
   private checkUserExists = async (email: string): Promise<boolean> => {
@@ -159,4 +157,111 @@ export class UsersService {
     console.log(user);
     return user !== null;
   };
+
+  async sendMail(resetPwdSendMailDTO: ResetPwdSendMailDTO): Promise<boolean> {
+    const user = await this.userRepository.findOne({
+      where: { ...resetPwdSendMailDTO },
+    });
+    if (!user) {
+      throw new NotFoundException('일치하는 유저 정보가 없습니다.');
+    }
+
+    const queryRunner = this.connection.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction('SERIALIZABLE');
+    try {
+      const token = uuidv4();
+      const tokenInfo = new Token();
+      tokenInfo.email = resetPwdSendMailDTO.email;
+      tokenInfo.value = token;
+      tokenInfo.type = 'resetPassword';
+      await queryRunner.manager.save(tokenInfo);
+
+      const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure: true,
+        auth: {
+          type: 'OAuth2',
+          user: process.env.MAILER_FROM,
+          clientId: process.env.OAUTH_CLIENT_ID,
+          clientSecret: process.env.OAUTH_CLIENT_SECRET,
+          refreshToken: process.env.OAUTH_REFRESH_TOKEN,
+        },
+      });
+
+      await transporter.sendMail({
+        to: resetPwdSendMailDTO.email,
+        from: process.env.MAILER_FROM,
+        subject: 'WithChat 비밀번호 변경 메일입니다.',
+        html: `
+             <!DOCTYPE html>
+             <div>
+             <a>WithChat 비밀번호 변경 메일입니다.</a><br/>
+             <a href='${process.env.RESET_PASSWORD_PAGE_LOCAL}?email=${user.email}&token=${token}'>비밀번호 변경(localhost)</a><br/>
+             <a href='${process.env.RESET_PASSWORD_PAGE}?email=${user.email}&token=${token}'>비밀번호 변경(withchat.site)</a>
+             </div>`,
+      });
+
+      await queryRunner.commitTransaction();
+      return true;
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  async updatePassword(updatePasswordDto: UpdatePwdDTO): Promise<boolean> {
+    const isValid = await this.tokenRepository
+      .createQueryBuilder('token')
+      .where('token.email = :email', { email: updatePasswordDto.email })
+      .andWhere('token.type = :type', { type: 'resetPassword' })
+      .orderBy('token.createdAt', 'DESC')
+      .getOne();
+    if (!isValid) throw new UnauthorizedException('권한이 없습니다.');
+
+    const salt = await bcrypt.genSalt();
+
+    const result = await this.userRepository.update(
+      { email: updatePasswordDto.email },
+      { password: await bcrypt.hash(updatePasswordDto.newPassword, salt) },
+    );
+
+    return result.affected > 0;
+  }
+
+  async updateUser(
+    updateUserDto: UpdateUserDto,
+    currentUser: ICurrentUser,
+  ): Promise<User> {
+    const result = await this.userRepository.update(
+      { id: currentUser.id },
+      { ...updateUserDto },
+    );
+
+    if (result.affected < 0) throw new ConflictException('회원정보 수정 실패');
+
+    return this.userRepository.findOne({ where: { id: currentUser.id } });
+  }
+
+  async deleteUser(currentUser: ICurrentUser): Promise<boolean> {
+    const result = await this.userRepository.softDelete({ id: currentUser.id });
+    return result.affected > 0;
+  }
+
+  async searchUser(keyword: string) {
+    const result = await this.userRepository
+      .createQueryBuilder('users')
+      .where(`users.name LIKE '%'||:keyword||'%'`, {
+        keyword,
+      })
+      .orWhere(`users.nickName LIKE '%'||:keyword||'%'`, { keyword })
+      .orWhere(`users.email LIKE '%'||:keyword||'%'`, { keyword })
+      .getMany();
+    console.log(result);
+    return result;
+  }
 }

@@ -8,6 +8,9 @@ import {
   HttpStatus,
   UseGuards,
   Query,
+  Patch,
+  ConflictException,
+  Delete,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -22,6 +25,7 @@ import { AuthAccessGuard } from '../auth/gql-auth.guard';
 import { CurrentUser, ICurrentUser } from '../auth/gql-user.param';
 import { UserResult } from './dto/user-result.dto';
 import { LoginResult } from './dto/user-login.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('users')
 @ApiTags('회원 정보 API')
@@ -60,6 +64,22 @@ export class UsersController {
     });
   }
 
+  @Get('/search')
+  @ApiOperation({
+    summary: '유저 정보 검색 API',
+    description:
+      'email, nickname에 입력 받은 keyword를 포함하는 유저 정보 목록 반환',
+  })
+  @ApiOkResponse({
+    description: '검색 성공.',
+    type: UserResult,
+  })
+  searchUser(@Res() res, @Query('keyword') keyword: string) {
+    return this.usersService.searchUser(keyword).then((result) => {
+      res.status(HttpStatus.OK).json({ success: true, searchResult: result });
+    });
+  }
+
   @Post()
   @ApiOperation({ summary: '회원 가입 API', description: '유저를 생성한다.' })
   @ApiCreatedResponse({
@@ -74,7 +94,8 @@ export class UsersController {
   }
 
   @Get('/verification')
-  verification(
+  @ApiOperation({ summary: 'email 인증 API', description: '서버용입니당~~' })
+  createUserVerification(
     @Res() res,
     @Query('email') email: string,
     @Query('token') token: string,
@@ -112,19 +133,110 @@ export class UsersController {
   })
   @ApiOkResponse({
     description: '조회 성공',
-    schema: { example: { success: true, emails: ['asd@asd.asd'] } },
+    schema: { example: { success: true, email: 'asd@asd.asd' } },
   })
   findEmail(
     @Res() res,
-    @Query('name') name: string,
+    @Query('nickName') nickName: string,
     @Query('year') year: number,
     @Query('month') month: number,
     @Query('day') day: number,
   ) {
     return this.usersService
-      .findEmail(name, year, month, day)
-      .then((emails) =>
-        res.status(HttpStatus.OK).json({ success: true, emails }),
+      .findEmail({ nickName, year, month, day })
+      .then((email) =>
+        res.status(HttpStatus.OK).json({ success: true, email }),
       );
+  }
+
+  @Post('/resetPassword/sendMail')
+  @ApiOperation({
+    summary: '비밀번호 초기화 - 본인 인증 메일 전송 ',
+    description: '비밀번호 초기화를 하기 위해 본인 인증 메일을 발송한다.',
+  })
+  @ApiOkResponse({
+    description: '메일 전송 성공',
+    schema: { example: { success: true, message: '메일이 전송되었습니다.' } },
+  })
+  sendMail(
+    @Res() res,
+    @Query('email') email: string,
+    @Query('name') name: string,
+  ) {
+    return this.usersService
+      .sendMail({ email, name })
+      .then((_) =>
+        res
+          .status(HttpStatus.OK)
+          .json({ success: true, message: '메일이 전송되었습니다.' }),
+      );
+  }
+
+  @Patch('/resetPassword/updatePassword')
+  @ApiOperation({
+    summary: '비밀번호 변경 API',
+    description: '입력받은 비밀번호로 변경',
+  })
+  @ApiOkResponse({
+    description: '변경 성공',
+    schema: { example: { success: true, message: '비밀번호 변경 성공' } },
+  })
+  updatePassword(
+    @Res() res,
+    @Query('email') email: string,
+    @Query('token') token: string,
+    @Query('newPassword') newPassword: string,
+  ) {
+    return this.usersService
+      .updatePassword({ email, token, newPassword })
+      .then((result) => {
+        if (!result) throw new ConflictException('비밀번호 변경 실패');
+        return res
+          .status(HttpStatus.OK)
+          .json({ success: true, message: '비밀번호 변경 성공' });
+      });
+  }
+
+  @UseGuards(AuthAccessGuard)
+  @Patch('')
+  @ApiOperation({
+    summary: '회원정보 수정 API',
+    description: '입력받은 회원정보로 변경',
+  })
+  @ApiOkResponse({
+    description: '수정 성공',
+    type: UserResult,
+  })
+  updateUser(
+    @Res() res,
+    @Body() updateUserDto: UpdateUserDto,
+    @CurrentUser() currentUser: ICurrentUser,
+  ) {
+    return this.usersService
+      .updateUser(updateUserDto, currentUser)
+      .then((result) => {
+        if (!result) throw new ConflictException('회원정보 수정 실패');
+        const { password, ...user } = result;
+        return res.status(HttpStatus.OK).json({ success: true, user: user });
+      });
+  }
+
+  @UseGuards(AuthAccessGuard)
+  @Delete('')
+  @ApiOperation({
+    summary: '회원정보 삭제 API',
+    description: '로그인중인 회원 정보 삭제',
+  })
+  @ApiOkResponse({
+    description: '삭제 성공',
+    schema: { example: { success: true, message: '회원정보 삭제 성공' } },
+  })
+  deleteUser(@Res() res, @CurrentUser() currentUser: ICurrentUser) {
+    return this.usersService.deleteUser(currentUser).then((result) => {
+      if (!result) throw new ConflictException('회원정보 삭제 실패');
+      return res
+        .status(HttpStatus.OK)
+        .json({ success: true, message: '회원정보 삭제 성공' });
+    });
   }
 }
