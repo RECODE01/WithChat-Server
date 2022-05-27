@@ -11,28 +11,48 @@ export class LoginResult {
     description: '로그인 유저 정보 / 친구 목록',
     example: {
       user: {
-        id: '77762ef8-ffdf-4f5d-a36b-dea79fd60aac',
         email: 'asd@asd.asd',
         name: '최건',
         nickName: '최총',
-        createdAt: '2022-05-02T02:39:42.161Z',
-        updatedAt: '2022-05-02T02:39:42.161Z',
       },
       friendList: [
         {
-          id: '77762ef8-ffdf-4f5d-a36b-dea79fd60aac',
-          nickName: '홍길동',
-          email: 'asd2@asd.asd',
+          email: 'asd@asd.asd',
+          name: '최건',
+          nickName: '최총',
         },
+      ],
+      friendRequest: [
         {
           id: '77762ef8-ffdf-4f5d-a36b-dea79fd60aac',
-          nickName: '철수',
-          email: 'asd3@asd.asd',
+          fromUser: {
+            email: 'asd@asd.asd',
+            name: '최건',
+            nickName: '최총',
+          },
+          toUser: {
+            email: 'asd@asd.asd',
+            name: '최건',
+            nickName: '최총',
+          },
+          isAccepted: false,
         },
+      ],
+      inviteList: [
         {
           id: '77762ef8-ffdf-4f5d-a36b-dea79fd60aac',
-          nickName: '영희',
-          email: 'asd4@asd.asd',
+          chattingRoom: {
+            id: '77762ef8-ffdf-4f5d-a36b-dea79fd60aac',
+            name: '채팅방이름',
+            image: 'imageUrl',
+          },
+        },
+      ],
+      chattingRoomList: [
+        {
+          id: '77762ef8-ffdf-4f5d-a36b-dea79fd60aac',
+          name: '채팅방이름',
+          image: 'imageUrl',
         },
       ],
     },
