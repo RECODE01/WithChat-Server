@@ -251,4 +251,17 @@ export class UsersService {
     const result = await this.userRepository.softDelete({ id: currentUser.id });
     return result.affected > 0;
   }
+
+  async searchUser(keyword: string) {
+    const result = await this.userRepository
+      .createQueryBuilder('users')
+      .where(`users.name LIKE '%'||:keyword||'%'`, {
+        keyword,
+      })
+      .orWhere(`users.nickName LIKE '%'||:keyword||'%'`, { keyword })
+      .orWhere(`users.email LIKE '%'||:keyword||'%'`, { keyword })
+      .getMany();
+    console.log(result);
+    return result;
+  }
 }
