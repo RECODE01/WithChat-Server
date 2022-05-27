@@ -287,8 +287,8 @@ export class UsersService {
     return result.affected > 0;
   }
 
-  async searchUser(keyword: string) {
-    const result = await this.userRepository
+  async searchUser(keyword: string, currentUser: ICurrentUser) {
+    const userList = this.userRepository
       .createQueryBuilder('users')
       .where(`users.name LIKE '%'||:keyword||'%'`, {
         keyword,
@@ -296,6 +296,32 @@ export class UsersService {
       .orWhere(`users.nickName LIKE '%'||:keyword||'%'`, { keyword })
       .orWhere(`users.email LIKE '%'||:keyword||'%'`, { keyword })
       .getMany();
+    const friendList = this.friendService.fetchMyFriends(currentUser);
+    const friendRequestList = this.friendRequestRepository.find({
+      where: { fromUser: { id: currentUser.id } },
+    });
+    const result = await Promise.all([
+      userList,
+      friendList,
+      friendRequestList,
+    ]).then((values) => {
+      console.log('==============', values[0][0]);
+      console.log('==============', values[1][0]);
+      console.log('==============', values[2][0]);
+      return values[0]
+        .filter(
+          (user) =>
+            !values[1].map((friend) => friend.user.id).includes(user.id),
+        )
+        .map((user) => {
+          return {
+            ...user,
+            isFriend: values[2].filter((el) => el.toUser.id === user.id).length
+              ? 'w'
+              : 'n',
+          };
+        });
+    });
     console.log(result);
     return result;
   }
