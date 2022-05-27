@@ -14,11 +14,10 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Token, User } from './entities/user.entity';
 import { v4 as uuidv4 } from 'uuid';
-// import { nodemailer } from 'nodemailer';
+import * as bcrypt from 'bcrypt';
 import * as nodemailer from 'nodemailer';
 import { FindEmailDto } from './dto/find-email.dto';
 import { ResetPwdSendMailDTO, UpdatePwdDTO } from './dto/reset-password.dto';
-// const nodemailer = require('nodemailer');
 @Injectable()
 export class UsersService {
   constructor(
@@ -40,12 +39,16 @@ export class UsersService {
     await queryRunner.startTransaction('SERIALIZABLE');
     try {
       // const result = this.userRepository.save({ ...createUserDto });
+      const salt = await bcrypt.genSalt();
+      console.log(salt);
+
       const user = new User();
       user.email = createUserDto.email;
       user.name = createUserDto.name;
       user.password = createUserDto.password;
       user.nickName = createUserDto.nickName;
       user.year = createUserDto.year;
+      user.password = await bcrypt.hash(createUserDto.password, salt);
       user.month = createUserDto.month;
       user.day = createUserDto.day;
       const result = await queryRunner.manager.save(user);
@@ -56,9 +59,6 @@ export class UsersService {
       tokenInfo.value = token;
       tokenInfo.type = 'signup';
       await queryRunner.manager.save(tokenInfo);
-
-      console.log(createUserDto.email);
-      console.log(process.env.MAILER_FROM);
 
       const transporter = nodemailer.createTransport({
         service: 'gmail',

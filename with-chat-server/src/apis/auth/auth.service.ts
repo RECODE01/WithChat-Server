@@ -8,6 +8,7 @@ import { JwtService } from '@nestjs/jwt';
 import { User } from '../users/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import * as bcrypt from 'bcrypt';
 @Injectable()
 export class AuthService {
   constructor(
@@ -49,10 +50,9 @@ export class AuthService {
     const user = await this.userRepository.findOne({
       where: { email: loginDto.email },
     });
-    console.log(user);
     if (!user)
       throw new UnauthorizedException('일치하는 계정 정보가 없습니다.');
-    if (user.password !== loginDto.password)
+    if (!(await bcrypt.compare(loginDto.password, user.password)))
       throw new UnauthorizedException('비밀번호가 일치하지 않습니다.');
     if (user.certified === false)
       throw new ForbiddenException('이메일 인증을 완료해 주세요.');
