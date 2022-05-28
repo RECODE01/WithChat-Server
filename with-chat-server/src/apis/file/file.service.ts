@@ -20,6 +20,7 @@ export class FileService {
     const blobStream = blob.createWriteStream();
 
     blobStream.on('error', (err) => {
+      console.log(err);
       res.status(HttpStatus.BAD_REQUEST).json({
         success: false,
         url: `파일 업로드 실패`,
@@ -29,7 +30,7 @@ export class FileService {
       console.log('isDone');
       res.status(HttpStatus.CREATED).json({
         success: true,
-        url: `https://storage.googleapis.com/withchat/${blob.name}`,
+        url: `https://storage.googleapis.com/wthchat/${blob.name}`,
       });
       return;
     });
