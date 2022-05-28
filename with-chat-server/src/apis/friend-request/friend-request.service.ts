@@ -49,7 +49,7 @@ export class FriendRequestService {
       if (!request)
         throw new NotFoundException('요청 정보를 찾을 수 없습니다.');
 
-      if (request.fromUser.id !== currentUser.id)
+      if (request.toUser.id !== currentUser.id)
         throw new ForbiddenException('권한이 없습니다.');
 
       const updateRequest = await queryRunner.manager.update(
