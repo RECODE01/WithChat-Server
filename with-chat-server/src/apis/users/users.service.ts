@@ -134,9 +134,11 @@ export class UsersService {
   };
 
   loggedInUser = async (currentUser: ICurrentUser) => {
+    console.log('====================1====================');
     const user = this.userRepository.findOne({
       where: { id: currentUser.id },
     });
+    console.log('====================2====================');
     const friendList = this.friendService.fetchMyFriends(currentUser);
     const friendRequestList = this.friendRequestRepository.find({
       where: {
@@ -144,9 +146,29 @@ export class UsersService {
         isAccepted: false,
       },
     });
-    const inviteList = this.chattingRoomInviteRepository.find({
-      where: { user: { id: currentUser.id }, isAccepted: false },
-    });
+    console.log('====================3====================');
+    // const inviteList = this.chattingRoomInviteRepository.find({
+    //   where: { user: { id: currentUser.id }, isAccepted: false },
+    // });
+    // const inviteList = this.chattingRoomInviteRepository.find({
+    //   where: { user: { id: currentUser.id }, isAccepted: false },
+    // });
+    const inviteList = this.chattingRoomInviteRepository
+      .createQueryBuilder('chattingRoomInvite')
+      .where('chattingRoomInvite.userId = :userId', { userId: currentUser.id })
+      .andWhere('chattingRoomInvite.isAccepted = False')
+      .getMany();
+    // @PrimaryGeneratedColumn('uuid')
+    // id: string;
+    // @JoinColumn()
+    // @ManyToOne((type) => ChattingRoom, (room) => room.id, { eager: true })
+    // chattingRoom: ChattingRoom;
+    // @JoinColumn()
+    // @ManyToOne((type) => User, (user) => user.id, { eager: true })
+    // user: User;
+    // @Column({ type: Boolean, default: false })
+    // isAccepted: boolean;
+    console.log('====================4====================');
     const serverList = this.chattingRoomRepository
       .createQueryBuilder('chattingRoom')
       .leftJoin('chattingRoom.users', 'chattingRoomUserDetail')
@@ -154,6 +176,7 @@ export class UsersService {
         userId: currentUser.id,
       })
       .getMany();
+    console.log('====================5====================');
 
     const result = await Promise.all([
       user,
@@ -162,6 +185,11 @@ export class UsersService {
       inviteList,
       serverList,
     ]).then((values) => {
+      console.log(values[0]);
+      console.log(values[1]);
+      console.log(values[2]);
+      console.log(values[3]);
+      console.log(values[4]);
       return {
         user: values[0],
         friendList: values[1],
