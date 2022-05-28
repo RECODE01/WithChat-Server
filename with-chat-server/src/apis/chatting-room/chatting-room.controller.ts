@@ -6,6 +6,10 @@ import {
   Res,
   HttpStatus,
   Get,
+  Delete,
+  Patch,
+  ConflictException,
+  Query,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -22,9 +26,11 @@ import {
   MyChattingRoomList,
 } from './dto/chatting-room-result.dto';
 import { CreateChattingRoomDto } from './dto/create-chatting-room.dto';
+import { GrantUserAuthorityDto } from './dto/grant-user-authority.dto';
+import { UpdateChattingRoomDto } from './dto/update-chatting-room.dto';
 
 @Controller('chatting-room')
-@ApiTags('채팅방 정보 API')
+@ApiTags('채팅방 API')
 export class ChattingRoomController {
   constructor(private readonly chattingRoomService: ChattingRoomService) {}
 
@@ -67,6 +73,79 @@ export class ChattingRoomController {
       .fetchMyChattingRoom(currentUser)
       .then((result) => {
         res.status(HttpStatus.OK).json({ success: true, result: result });
+      });
+  }
+  @UseGuards(AuthAccessGuard)
+  @Patch('')
+  @ApiOperation({
+    summary: '채팅방 수정 API',
+    description: '입력받은 값으로 변경',
+  })
+  @ApiOkResponse({
+    description: '수정 성공',
+  })
+  updateChattingRoom(
+    @Res() res,
+    @Body() updateUserDto: UpdateChattingRoomDto,
+    @CurrentUser() currentUser: ICurrentUser,
+  ) {
+    return this.chattingRoomService
+      .updateChattingRoom(updateUserDto, currentUser)
+      .then((result) => {
+        if (!result) throw new ConflictException('채팅방 수정 실패');
+        return res
+          .status(HttpStatus.OK)
+          .json({ success: true, message: '채팅방 수정 성공' });
+      });
+  }
+
+  @UseGuards(AuthAccessGuard)
+  @Delete('')
+  @ApiOperation({
+    summary: '채팅방 삭제 API',
+    description: '채팅방 삭제',
+  })
+  @ApiOkResponse({
+    description: '삭제 성공',
+    schema: { example: { success: true, message: '채팅방 삭제 성공' } },
+  })
+  deleteChattingRoom(
+    @Res() res,
+    @Query('roomId') roomId: string,
+    @CurrentUser() currentUser: ICurrentUser,
+  ) {
+    return this.chattingRoomService
+      .deleteChattingRoom(roomId, currentUser)
+      .then((result) => {
+        if (!result) throw new ConflictException('채팅방 삭제 실패');
+        return res
+          .status(HttpStatus.OK)
+          .json({ success: true, message: '채팅방 삭제 성공' });
+      });
+  }
+
+  @UseGuards(AuthAccessGuard)
+  @Patch('/grant')
+  @ApiOperation({
+    summary: '채팅방 권한 부여 API',
+    description: '채팅방 권한 부여',
+  })
+  @ApiOkResponse({
+    description: '권한 부여 성공',
+    schema: { example: { success: true, message: '채팅방 권한 부여 성공' } },
+  })
+  grantUserAuthority(
+    @Res() res,
+    @Body() grantUserAuthorityDto: GrantUserAuthorityDto,
+    @CurrentUser() currentUser: ICurrentUser,
+  ) {
+    return this.chattingRoomService
+      .grantUserAuthority(grantUserAuthorityDto, currentUser)
+      .then((result) => {
+        if (!result) throw new ConflictException('권한 부여 실패');
+        return res
+          .status(HttpStatus.OK)
+          .json({ success: true, message: '권한 부여 성공' });
       });
   }
 }
