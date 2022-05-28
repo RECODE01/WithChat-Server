@@ -30,7 +30,7 @@ import { GrantUserAuthorityDto } from './dto/grant-user-authority.dto';
 import { UpdateChattingRoomDto } from './dto/update-chatting-room.dto';
 
 @Controller('chatting-room')
-@ApiTags('채팅방 API')
+@ApiTags('채팅 서버 API')
 export class ChattingRoomController {
   constructor(private readonly chattingRoomService: ChattingRoomService) {}
 
@@ -38,11 +38,11 @@ export class ChattingRoomController {
   @Post()
   @ApiBearerAuth('access-token')
   @ApiOperation({
-    summary: '채팅방 생성 API',
-    description: '채팅방을 생성한다.',
+    summary: '채팅 서버 생성 API',
+    description: '채팅 서버을 생성한다.',
   })
   @ApiCreatedResponse({
-    description: '채팅방 생성 성공',
+    description: '채팅 서버 생성 성공',
     type: ChattingRoomResult,
   })
   createChattingRoom(
@@ -61,11 +61,11 @@ export class ChattingRoomController {
   @Get()
   @ApiBearerAuth('access-token')
   @ApiOperation({
-    summary: '채팅방 목록 조회 API',
-    description: '로그인한 유저가 참여중인 채팅방 목록을 조회한다.',
+    summary: '채팅 서버 목록 조회 API',
+    description: '로그인한 유저가 참여중인 채팅 서버 목록을 조회한다.',
   })
   @ApiOkResponse({
-    description: '채팅방 조회 성공',
+    description: '채팅 서버 조회 성공',
     type: MyChattingRoomList,
   })
   fetchMyChattingRoom(@Res() res, @CurrentUser() currentUser: ICurrentUser) {
@@ -78,7 +78,7 @@ export class ChattingRoomController {
   @UseGuards(AuthAccessGuard)
   @Patch('')
   @ApiOperation({
-    summary: '채팅방 수정 API',
+    summary: '채팅 서버 수정 API',
     description: '입력받은 값으로 변경',
   })
   @ApiOkResponse({
@@ -92,22 +92,22 @@ export class ChattingRoomController {
     return this.chattingRoomService
       .updateChattingRoom(updateUserDto, currentUser)
       .then((result) => {
-        if (!result) throw new ConflictException('채팅방 수정 실패');
+        if (!result) throw new ConflictException('채팅 서버 수정 실패');
         return res
           .status(HttpStatus.OK)
-          .json({ success: true, message: '채팅방 수정 성공' });
+          .json({ success: true, message: '채팅 서버 수정 성공' });
       });
   }
 
   @UseGuards(AuthAccessGuard)
   @Delete('')
   @ApiOperation({
-    summary: '채팅방 삭제 API',
-    description: '채팅방 삭제',
+    summary: '채팅 서버 삭제 API',
+    description: '채팅 서버 삭제',
   })
   @ApiOkResponse({
     description: '삭제 성공',
-    schema: { example: { success: true, message: '채팅방 삭제 성공' } },
+    schema: { example: { success: true, message: '채팅 서버 삭제 성공' } },
   })
   deleteChattingRoom(
     @Res() res,
@@ -117,22 +117,22 @@ export class ChattingRoomController {
     return this.chattingRoomService
       .deleteChattingRoom(roomId, currentUser)
       .then((result) => {
-        if (!result) throw new ConflictException('채팅방 삭제 실패');
+        if (!result) throw new ConflictException('채팅 서버 삭제 실패');
         return res
           .status(HttpStatus.OK)
-          .json({ success: true, message: '채팅방 삭제 성공' });
+          .json({ success: true, message: '채팅 서버 삭제 성공' });
       });
   }
 
   @UseGuards(AuthAccessGuard)
   @Patch('/grant')
   @ApiOperation({
-    summary: '채팅방 권한 부여 API',
-    description: '채팅방 권한 부여',
+    summary: '채팅 서버 권한 부여 API',
+    description: '채팅 서버 권한 부여',
   })
   @ApiOkResponse({
     description: '권한 부여 성공',
-    schema: { example: { success: true, message: '채팅방 권한 부여 성공' } },
+    schema: { example: { success: true, message: '채팅 서버 권한 부여 성공' } },
   })
   grantUserAuthority(
     @Res() res,

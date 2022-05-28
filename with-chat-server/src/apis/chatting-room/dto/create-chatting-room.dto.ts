@@ -2,14 +2,14 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateChattingRoomDto {
   @ApiProperty({
-    description: '채팅방이름',
+    description: '채팅 서버이름',
     required: true,
-    example: '채팅방1',
+    example: '채팅 서버1',
   })
   name: string;
 
   @ApiProperty({
-    description: '채팅방이미지',
+    description: '채팅 서버이미지',
     required: true,
     example: 'default.jpg',
     nullable: true,

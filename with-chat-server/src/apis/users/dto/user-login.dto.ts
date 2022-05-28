@@ -43,7 +43,7 @@ export class LoginResult {
           id: '77762ef8-ffdf-4f5d-a36b-dea79fd60aac',
           chattingRoom: {
             id: '77762ef8-ffdf-4f5d-a36b-dea79fd60aac',
-            name: '채팅방이름',
+            name: '채팅 서버이름',
             image: 'imageUrl',
           },
         },
@@ -51,7 +51,7 @@ export class LoginResult {
       chattingRoomList: [
         {
           id: '77762ef8-ffdf-4f5d-a36b-dea79fd60aac',
-          name: '채팅방이름',
+          name: '채팅 서버이름',
           image: 'imageUrl',
         },
       ],

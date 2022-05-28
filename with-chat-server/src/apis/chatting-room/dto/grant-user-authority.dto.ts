@@ -3,7 +3,7 @@ import { CreateChattingRoomDto } from './create-chatting-room.dto';
 
 export class GrantUserAuthorityDto {
   @ApiProperty({
-    description: '채팅방 ID',
+    description: '채팅 서버 ID',
     required: true,
     example: 'c539a8c4-0f70-4d3f-8eba-2f2c716293f4',
   })
