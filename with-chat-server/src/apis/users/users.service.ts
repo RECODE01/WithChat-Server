@@ -280,6 +280,8 @@ export class UsersService {
       { ...updateUserDto },
     );
 
+    console.log(updateUserDto);
+    console.log(result, 'result');
     if (result.affected < 0) throw new ConflictException('회원정보 수정 실패');
 
     return this.userRepository.findOne({ where: { id: currentUser.id } });

@@ -17,7 +17,7 @@ import { AuthAccessGuard } from '../auth/gql-auth.guard';
 import { CurrentUser } from '../auth/gql-user.param';
 import { ChattingRoomInviteService } from './chatting-room-invite.service';
 import { Response } from 'express';
-@ApiTags('채팅방 초대 API')
+@ApiTags('채팅 서버 초대 API')
 @Controller('chatting-room-invite')
 export class ChattingRoomInviteController {
   constructor(
@@ -28,15 +28,15 @@ export class ChattingRoomInviteController {
   @UseGuards(AuthAccessGuard)
   @ApiBearerAuth('access-token')
   @ApiOperation({
-    summary: '채팅방 초대 API',
-    description: '대상 유저 채팅방 초대',
+    summary: '채팅 서버 초대 API',
+    description: '대상 유저 채팅 서버 초대',
   })
   @ApiCreatedResponse({
     description: '요청 성공',
     schema: {
       example: {
         success: true,
-        message: '채팅방 초대를 보냈습니다.',
+        message: '채팅 서버 초대를 보냈습니다.',
       },
     },
   })
@@ -51,7 +51,7 @@ export class ChattingRoomInviteController {
       .then(() => {
         res
           .status(HttpStatus.CREATED)
-          .json({ success: true, message: '채팅방 초대를 보냈습니다.' });
+          .json({ success: true, message: '채팅 서버 초대를 보냈습니다.' });
       });
   }
 
@@ -59,15 +59,15 @@ export class ChattingRoomInviteController {
   @UseGuards(AuthAccessGuard)
   @ApiBearerAuth('access-token')
   @ApiOperation({
-    summary: '채팅방 초대 수락 API',
-    description: '해당 채팅방 초대 수락',
+    summary: '채팅 서버 초대 수락 API',
+    description: '해당 채팅 서버 초대 수락',
   })
   @ApiCreatedResponse({
     description: '요청 성공',
     schema: {
       example: {
         success: true,
-        message: '채팅방에 참여하였습니다.',
+        message: '채팅 서버에 참여하였습니다.',
       },
     },
   })
@@ -81,7 +81,7 @@ export class ChattingRoomInviteController {
       .then(() => {
         res
           .status(HttpStatus.CREATED)
-          .json({ success: true, message: '채팅방에 참여하였습니다.' });
+          .json({ success: true, message: '채팅 서버에 참여하였습니다.' });
       });
   }
 }

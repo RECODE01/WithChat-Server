@@ -11,6 +11,8 @@ import { FileModule } from './apis/file/file.module';
 import { ChattingRoomModule } from './apis/chatting-room/chatting-room.module';
 import { ChatGateway } from './chat.gateway';
 import { ChattingRoomInviteModule } from './apis/chatting-room-invite/chatting-room-invite.module';
+import { ChattingChannelModule } from './apis/chatting-channel/chatting-channel.module';
+import { ChannelHistoryModule } from './channel-history/channel-history.module';
 
 @Module({
   imports: [
@@ -37,6 +39,8 @@ import { ChattingRoomInviteModule } from './apis/chatting-room-invite/chatting-r
     FileModule,
     ChattingRoomModule,
     ChattingRoomInviteModule,
+    ChattingChannelModule,
+    ChannelHistoryModule,
   ],
   controllers: [AppController],
   providers: [AppService, ChatGateway],
