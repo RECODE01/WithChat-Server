@@ -18,6 +18,10 @@ import { Server, Socket } from 'socket.io';
 export class ChatGateway {
   @WebSocketServer()
   server: Server;
+  wsClients = [];
+  handleConnection(client: any) {
+    this.wsClients.push(client);
+  }
 
   @SubscribeMessage('hihi')
   connectSomeone(@MessageBody() data: string) {
@@ -27,13 +31,11 @@ export class ChatGateway {
     this.server.emit('comeOn' + room, comeOn);
   }
 
-  private broadcast(event, client: Socket, message: any) {
-    console.log(this.server.sockets);
-    // for (const id in this.server.sockets) {
-    //   if (id !== client.id) {
-    //     this.server.sockets[id].emit(event, message);
-    //   }
-    // }
+  private broadcast(event, client, message: any) {
+    for (const c of this.wsClients) {
+      if (client.id == c.id) continue;
+      c.emit(event, message);
+    }
   }
 
   @SubscribeMessage('send')
