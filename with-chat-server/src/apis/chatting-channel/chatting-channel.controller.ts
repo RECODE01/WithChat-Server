@@ -68,6 +68,28 @@ export class ChattingChannelController {
   }
 
   @Patch()
+  @UseGuards(AuthAccessGuard)
+  @ApiBearerAuth('access-token')
+  // @ApiOperation({
+  //   summary: '채팅 채널 생성 API',
+  //   description: '채팅 채널을 생성한다.',
+  // })
+  // @ApiCreatedResponse({
+  //   description: '채팅 채널 생성 성공',
+  //   schema: {
+  //     example: {
+  //       success: true,
+  //       channel: {
+  //         id: 'uuid',
+  //         name: '채팅방이름',
+  //         server: '채팅서버객체',
+  //         createdAt: 'datetime',
+  //         updatedAt: 'datetime',
+  //         deletedAt: 'datetime',
+  //       },
+  //     },
+  //   },
+  // })
   updateChattingChannel() {
     return this.chattingChannelService.updateChattingChannel();
   }
