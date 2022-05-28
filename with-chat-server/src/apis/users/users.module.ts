@@ -7,11 +7,22 @@ import { jwtAccessStrategy } from '../auth/strategy/jwt-access.strategy';
 import { AuthModule } from '../auth/auth.module';
 import { Friend, FriendDetail } from '../friend/entities/friend.entity';
 import { FriendService } from '../friend/friend.service';
+import { FriendRequest } from '../friend-request/entities/friend-request.entity';
+import { ChattingRoomInvite } from '../chatting-room-invite/entities/chatting-room-invite.entity';
+import { ChattingRoom } from '../chatting-room/entities/chatting-room.entity';
 // import { MailerModule } from '@nestjs-modules/mailer';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, Friend, FriendDetail, Token]),
+    TypeOrmModule.forFeature([
+      User,
+      Friend,
+      FriendDetail,
+      Token,
+      FriendRequest,
+      ChattingRoomInvite,
+      ChattingRoom,
+    ]),
     // MailerModule.forRoot({
     //   transport: {
     //     service: 'gmail',

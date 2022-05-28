@@ -8,6 +8,8 @@ import {
 } from './entities/chatting-room.entity';
 import { AuthModule } from '../auth/auth.module';
 import { User } from '../users/entities/user.entity';
+import { FriendRequest } from '../friend-request/entities/friend-request.entity';
+import { ChattingRoomInvite } from '../chatting-room-invite/entities/chatting-room-invite.entity';
 
 @Module({
   imports: [

@@ -1,10 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { userInfo } from 'os';
 import { Repository } from 'typeorm';
 import { ICurrentUser } from '../auth/gql-user.param';
 import { User } from '../users/entities/user.entity';
 import { CreateChattingRoomDto } from './dto/create-chatting-room.dto';
+import { GrantUserAuthorityDto } from './dto/grant-user-authority.dto';
+import { UpdateChattingRoomDto } from './dto/update-chatting-room.dto';
 import {
   ChattingRoom,
   ChattingRoomUsersDetail,
@@ -53,5 +55,64 @@ export class ChattingRoomService {
 
     console.log(result);
     return result;
+  }
+
+  async updateChattingRoom(
+    updateUserDto: UpdateChattingRoomDto,
+    currentUser: ICurrentUser,
+  ) {
+    const { roomId, ...updateValue } = updateUserDto;
+    const authority = await this.chattingRoomRepository.findOne({
+      where: { id: roomId },
+    });
+    if (
+      authority.users.filter(
+        (el) => el.auth === 0 && el.user.id === currentUser.id,
+      ).length < 1
+    )
+      throw new ConflictException('권한이 없습니다.');
+    return await this.chattingRoomRepository.update(
+      { id: roomId },
+      { ...updateValue },
+    );
+  }
+
+  async deleteChattingRoom(roomId: string, currentUser: ICurrentUser) {
+    const authority = await this.chattingRoomRepository.findOne({
+      where: { id: roomId },
+    });
+    if (
+      authority.users.filter(
+        (el) => el.auth <= 1 && el.user.id === currentUser.id,
+      ).length < 1
+    )
+      throw new ConflictException('권한이 없습니다.');
+    return await this.chattingRoomRepository.softDelete({ id: roomId });
+  }
+
+  async grantUserAuthority(
+    grantUserAuthorityDto: GrantUserAuthorityDto,
+    currentUser: ICurrentUser,
+  ) {
+    const authority = await this.chattingRoomRepository.findOne({
+      where: { id: grantUserAuthorityDto.roomId },
+    });
+    if (
+      authority.users.filter(
+        (el) => el.auth === 0 && el.user.id === currentUser.id,
+      ).length < 1
+    )
+      throw new ConflictException('권한이 없습니다.');
+
+    const result = await this.chattingRoomUsersDetailRepository.update(
+      {
+        master: {
+          id: grantUserAuthorityDto.roomId,
+        },
+        user: { id: grantUserAuthorityDto.targetId },
+      },
+      { auth: grantUserAuthorityDto.auth },
+    );
+    return result.affected > 0;
   }
 }

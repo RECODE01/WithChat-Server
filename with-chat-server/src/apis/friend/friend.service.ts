@@ -35,6 +35,7 @@ export class FriendService {
       })
       .getMany();
 
+    console.log(friendList);
     return friendList;
   }
 }

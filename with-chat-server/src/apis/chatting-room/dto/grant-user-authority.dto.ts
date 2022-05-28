@@ -1,7 +1,7 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { CreateChattingRoomDto } from './create-chatting-room.dto';
 
-export class UpdateChattingRoomDto {
+export class GrantUserAuthorityDto {
   @ApiProperty({
     description: '채팅방 ID',
     required: true,
@@ -9,15 +9,15 @@ export class UpdateChattingRoomDto {
   })
   roomId: string;
   @ApiProperty({
-    description: '채팅방 이름',
-    required: false,
-    example: '채팅방1',
+    description: '권한을 부여할 유저 id',
+    required: true,
+    example: 'c539a8c4-0f70-4d3f-8eba-2f2c716293f4',
   })
-  name: string;
+  targetId: string;
   @ApiProperty({
-    description: '채팅방 이미지',
-    required: false,
-    example: '이미지 url',
+    description: '권한 레벨',
+    required: true,
+    example: 1,
   })
-  image: string;
+  auth: number;
 }

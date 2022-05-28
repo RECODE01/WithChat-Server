@@ -40,7 +40,7 @@ export class AuthService {
         secret: 'f1BtnWgD3VKY',
         algorithm: 'HS256',
         subject: 'accessToken',
-        expiresIn: '2h',
+        expiresIn: '2w',
       },
     );
   }
