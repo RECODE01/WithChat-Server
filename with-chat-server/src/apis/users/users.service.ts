@@ -158,16 +158,7 @@ export class UsersService {
       .where('chattingRoomInvite.userId = :userId', { userId: currentUser.id })
       .andWhere('chattingRoomInvite.isAccepted = False')
       .getMany();
-    // @PrimaryGeneratedColumn('uuid')
-    // id: string;
-    // @JoinColumn()
-    // @ManyToOne((type) => ChattingRoom, (room) => room.id, { eager: true })
-    // chattingRoom: ChattingRoom;
-    // @JoinColumn()
-    // @ManyToOne((type) => User, (user) => user.id, { eager: true })
-    // user: User;
-    // @Column({ type: Boolean, default: false })
-    // isAccepted: boolean;
+
     console.log('====================4====================');
     const serverList = this.chattingRoomRepository
       .createQueryBuilder('chattingRoom')
