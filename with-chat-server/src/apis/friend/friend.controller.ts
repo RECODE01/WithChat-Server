@@ -20,6 +20,8 @@ import { CurrentUser, ICurrentUser } from '../auth/gql-user.param';
 export class FriendController {
   constructor(private readonly friendService: FriendService) {}
 
+  @UseGuards(AuthAccessGuard)
+  @ApiBearerAuth('access-token')
   @Get()
   @ApiOperation({
     summary: '친구 목록 조회 API',
