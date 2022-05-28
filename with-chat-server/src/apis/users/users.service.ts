@@ -139,7 +139,10 @@ export class UsersService {
     });
     const friendList = this.friendService.fetchMyFriends(currentUser);
     const friendRequestList = this.friendRequestRepository.find({
-      where: { toUser: { id: currentUser.id }, isAccepted: false },
+      where: {
+        toUser: { id: currentUser.id, deletedAt: null },
+        isAccepted: false,
+      },
     });
     const inviteList = this.chattingRoomInviteRepository.find({
       where: { user: { id: currentUser.id }, isAccepted: false },
@@ -305,9 +308,6 @@ export class UsersService {
       friendList,
       friendRequestList,
     ]).then((values) => {
-      console.log('==============', values[0][0]);
-      console.log('==============', values[1][0]);
-      console.log('==============', values[2][0]);
       return values[0]
         .filter(
           (user) =>
