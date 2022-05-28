@@ -1,9 +1,8 @@
-import { ChattingChannel } from 'src/apis/chatting-channel/entities/chatting-channel.entity';
+import { User } from 'src/apis/users/entities/user.entity';
 import {
   CreateDateColumn,
   Entity,
-  JoinColumn,
-  OneToMany,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -12,9 +11,9 @@ import {
 export class ChannelHistory {
   @PrimaryGeneratedColumn('uuid')
   id: string;
-  @JoinColumn()
-  @OneToMany((type) => ChattingChannel, (channel) => channel.id)
-  channel: ChattingChannel;
+  channelId: string;
+  user: User;
+  message;
   @CreateDateColumn()
   createdAt: Date;
   @UpdateDateColumn()

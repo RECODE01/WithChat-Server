@@ -6,9 +6,8 @@ import {
   WebSocketServer,
   WsResponse,
 } from '@nestjs/websockets';
-import { from, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { Server, Socket } from 'socket.io';
+import { ChannelHistoryService } from 'src/apis/channel-history/channel-history.service';
 
 @WebSocketGateway({
   cors: {
@@ -23,6 +22,7 @@ export class ChatGateway {
     this.wsClients.push(client);
   }
 
+  constructor(private readonly channelHistoryService: ChannelHistoryService) {}
   @SubscribeMessage('hihi')
   connectSomeone(@MessageBody() data: string) {
     const [nickname, room] = data;
@@ -31,17 +31,15 @@ export class ChatGateway {
     this.server.emit('comeOn' + room, comeOn);
   }
 
-  // private broadcast(event, client, message: any) {
-  //   for (const c of this.wsClients) {
-  //     if (client.id == c.id) continue;
-  //     c.emit(event, message);
-  //   }
-  // }
-
   @SubscribeMessage('send')
   sendMessage(@MessageBody() data: string, @ConnectedSocket() client: Socket) {
     const [room, nickname, message] = data;
     console.log(`${client.id} : ${data}`);
     client.broadcast.emit(room, [nickname, message]);
+    this.channelHistoryService.createChannelHistory(
+      message,
+      client.id,
+      nickname,
+    );
   }
 }

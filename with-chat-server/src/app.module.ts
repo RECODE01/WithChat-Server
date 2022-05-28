@@ -9,10 +9,10 @@ import { FriendRequestModule } from './apis/friend-request/friend-request.module
 import { ConfigModule } from '@nestjs/config';
 import { FileModule } from './apis/file/file.module';
 import { ChattingRoomModule } from './apis/chatting-room/chatting-room.module';
-import { ChatGateway } from './chat.gateway';
+import { ChatGateway } from './chat/chat.gateway';
 import { ChattingRoomInviteModule } from './apis/chatting-room-invite/chatting-room-invite.module';
 import { ChattingChannelModule } from './apis/chatting-channel/chatting-channel.module';
-import { ChannelHistoryModule } from './channel-history/channel-history.module';
+import { ChannelHistoryModule } from './apis/channel-history/channel-history.module';
 
 @Module({
   imports: [
@@ -41,6 +41,7 @@ import { ChannelHistoryModule } from './channel-history/channel-history.module';
     ChattingRoomInviteModule,
     ChattingChannelModule,
     ChannelHistoryModule,
+    ChatGateway,
   ],
   controllers: [AppController],
   providers: [AppService, ChatGateway],
