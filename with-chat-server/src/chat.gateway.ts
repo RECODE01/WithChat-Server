@@ -19,7 +19,7 @@ export class ChatGateway {
   @WebSocketServer()
   server: Server;
   wsClients = [];
-  handleConnection(client: any) {
+  handleConnection(client: Socket) {
     this.wsClients.push(client);
   }
 
@@ -31,17 +31,17 @@ export class ChatGateway {
     this.server.emit('comeOn' + room, comeOn);
   }
 
-  private broadcast(event, client, message: any) {
-    for (const c of this.wsClients) {
-      if (client.id == c.id) continue;
-      c.emit(event, message);
-    }
-  }
+  // private broadcast(event, client, message: any) {
+  //   for (const c of this.wsClients) {
+  //     if (client.id == c.id) continue;
+  //     c.emit(event, message);
+  //   }
+  // }
 
   @SubscribeMessage('send')
   sendMessage(@MessageBody() data: string, @ConnectedSocket() client: Socket) {
     const [room, nickname, message] = data;
     console.log(`${client.id} : ${data}`);
-    this.broadcast(room, client, [nickname, message]);
+    client.broadcast.emit(room, [nickname, message]);
   }
 }
