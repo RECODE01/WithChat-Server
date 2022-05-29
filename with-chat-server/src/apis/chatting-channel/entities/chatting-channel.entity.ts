@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { ChattingRoom } from 'src/apis/chatting-room/entities/chatting-room.entity';
-import { ChannelHistory } from 'src/channel-history/entities/channel-history.entity';
+import { ChannelHistory } from 'src/apis/channel-history/entities/channel-history.entity';
 import {
   Column,
   CreateDateColumn,
