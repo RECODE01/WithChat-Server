@@ -22,7 +22,7 @@ export class ChatGateway {
     this.wsClients.push(client);
   }
 
-  constructor(private readonly channelHistoryService: ChannelHistoryService) {}
+  // constructor(private readonly channelHistoryService: ChannelHistoryService) {}
   @SubscribeMessage('hihi')
   connectSomeone(@MessageBody() data: string) {
     const [nickname, room] = data;
@@ -36,10 +36,10 @@ export class ChatGateway {
     const [room, nickname, message] = data;
     console.log(`${client.id} : ${data}`);
     client.broadcast.emit(room, [nickname, message]);
-    this.channelHistoryService.createChannelHistory(
-      message,
-      client.id,
-      nickname,
-    );
+    // this.channelHistoryService.createChannelHistory(
+    //   message,
+    //   client.id,
+    //   nickname,
+    // );
   }
 }
