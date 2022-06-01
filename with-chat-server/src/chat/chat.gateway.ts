@@ -35,9 +35,9 @@ export class ChatGateway {
 
   @SubscribeMessage('send')
   sendMessage(@MessageBody() data: string, @ConnectedSocket() client: Socket) {
-    const [room, nickname, message] = data;
+    const [user, channelId, contents] = data;
     console.log(`${client.id} : ${data}`);
     console.log('broadcast.emit');
-    client.broadcast.emit(room, [nickname, message]);
+    client.broadcast.emit(channelId, [user, contents]);
   }
 }
