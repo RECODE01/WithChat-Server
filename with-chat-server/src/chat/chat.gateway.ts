@@ -4,7 +4,6 @@ import {
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
-  WsResponse,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 
@@ -16,9 +15,6 @@ import { Server, Socket } from 'socket.io';
 export class ChatGateway {
   @WebSocketServer()
   server: Server;
-
-  @WebSocketServer()
-  client: Socket;
 
   wsClients = [];
   handleConnection(client: Socket) {
@@ -33,10 +29,15 @@ export class ChatGateway {
     this.server.emit('comeOn' + room, comeOn);
   }
 
-  // @SubscribeMessage('send')
-  // sendMessage(@MessageBody() data: string, @ConnectedSocket() client: Socket) {
-  //   const [room, nickname, message] = data;
-  //   console.log(`${client.id} : ${data}`);
-  //   client.broadcast.emit(room, [nickname, message]);
-  // }
+  getClient(@ConnectedSocket() client: Socket) {
+    return client;
+  }
+
+  @SubscribeMessage('send')
+  sendMessage(@MessageBody() data: string, @ConnectedSocket() client: Socket) {
+    const [room, nickname, message] = data;
+    console.log(`${client.id} : ${data}`);
+    console.log('broadcast.emit');
+    client.broadcast.emit(room, [nickname, message]);
+  }
 }
