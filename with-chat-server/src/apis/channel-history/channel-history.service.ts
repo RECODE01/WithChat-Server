@@ -1,9 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ConnectedSocket } from '@nestjs/websockets';
 import { Socket } from 'socket.io';
 import { ChatGateway } from 'src/chat/chat.gateway';
-import { Repository } from 'typeorm';
+import { Connection, Repository } from 'typeorm';
 import { ICurrentUser } from '../auth/gql-user.param';
 import { User } from '../users/entities/user.entity';
 import { CreateChannelHistoryDto } from './dto/create-channel-history.dto';
@@ -19,19 +19,36 @@ export class ChannelHistoryService {
 
     @ConnectedSocket()
     private chatGateway: ChatGateway,
+
+    private readonly connection: Connection,
   ) {}
 
   createChannelHistory = async (
     createChannelHistoryDto: CreateChannelHistoryDto,
     currentUser: ICurrentUser,
   ) => {
-    const user = this.userRepository.findOne({
-      where: { id: '8eca01cc-e21f-42f2-b161-e133ea31b029' },
-    });
+    const queryRunner = this.connection.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction('SERIALIZABLE');
+    try {
+      const user = await queryRunner.manager.findOne(User, {
+        where: { id: currentUser.id },
+      });
+      if (!user) throw new ConflictException('유저 정보가 없습니다');
+      console.log(user);
+      const result = await queryRunner.manager.save(ChannelHistory, {
+        writer: { id: user.id },
+        channel: { id: createChannelHistoryDto.channelId },
+        type: createChannelHistoryDto.type,
+        contents: createChannelHistoryDto.contents,
+      });
 
-    // this.client.broadcast.emit(createChannelHistoryDto.channelId, [
-    //   user,
-    //   createChannelHistoryDto.contents,
-    // ]);
+      return result;
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
   };
 }
