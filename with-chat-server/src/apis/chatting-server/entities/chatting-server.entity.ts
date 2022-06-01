@@ -45,7 +45,7 @@ export class ChattingServer {
   users: ChattingServerUserDetail[];
 
   @JoinColumn()
-  @OneToMany((type) => ChattingChannel, (channel) => channel.id, {
+  @OneToMany((type) => ChattingChannel, (channel) => channel.server, {
     eager: true,
     nullable: true,
   })

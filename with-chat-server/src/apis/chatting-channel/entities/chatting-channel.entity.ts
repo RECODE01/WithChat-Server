@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { ChattingServer } from 'src/apis/chatting-server/entities/chatting-server.entity';
 import { ChannelHistory } from 'src/apis/channel-history/entities/channel-history.entity';
 import {
+  Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
@@ -16,6 +17,9 @@ import {
 export class ChattingChannel {
   @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @Column({ type: 'varchar', length: 20 })
+  name: string;
 
   @JoinColumn()
   @ManyToOne((type) => ChattingServer, (server) => server.id)

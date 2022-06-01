@@ -72,7 +72,7 @@ export class FriendRequestService {
       });
       const friendDetailto = await queryRunner.manager.save(FriendDetail, {
         master: { id: friendMaster.id },
-        user: { id: request.toUser.id },
+        user: { id: request.fromUser.id },
       });
 
       if (!friendDetailFrom || !friendDetailto)
