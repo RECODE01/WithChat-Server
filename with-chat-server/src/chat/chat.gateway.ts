@@ -23,10 +23,10 @@ export class ChatGateway {
 
   @SubscribeMessage('join')
   connectSomeone(@MessageBody() data: string) {
-    const [nickname, room] = data;
-    console.log(`${nickname}님이 코드: ${room}방에 접속했습니다.`);
-    const comeOn = `${nickname}님이 입장했습니다.`;
-    this.server.emit('comeOn' + room, comeOn);
+    const [user, channelId] = data;
+    console.log(`${user}님이 코드: ${channelId}방에 접속했습니다.`);
+    const comeOn = `${user}님이 입장했습니다.`;
+    this.server.emit('comeOn' + channelId, comeOn);
   }
 
   getClient(@ConnectedSocket() client: Socket) {
