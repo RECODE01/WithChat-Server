@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  HttpStatus,
   Patch,
   Post,
   Res,
@@ -35,12 +36,13 @@ export class ChannelHistoryController {
   })
   createChannelgHistory(
     @Res() res,
-    @Body() createChannelgHistoryDto: CreateChannelHistoryDto,
+    @Body() createChannelHistoryDto: CreateChannelHistoryDto,
     @CurrentUser() currentUser,
   ) {
-    return this.channelHistoryService.createChannelHistory(
-      createChannelgHistoryDto,
-      currentUser,
-    );
+    return this.channelHistoryService
+      .createChannelHistory(createChannelHistoryDto, currentUser)
+      .then((result) => {
+        res.status(HttpStatus.CREATED).json({ success: true, user: result });
+      });
   }
 }

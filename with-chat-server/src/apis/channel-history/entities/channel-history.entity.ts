@@ -30,6 +30,9 @@ export class ChannelHistory {
   @ManyToOne((type) => User, (user) => user.id)
   writer: User;
 
+  @Column({ type: 'varchar', length: 20, default: 'text' })
+  type: string;
+
   @Column({ type: 'text' })
   contents: string;
 
