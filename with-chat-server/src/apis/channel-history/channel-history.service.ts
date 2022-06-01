@@ -17,9 +17,6 @@ export class ChannelHistoryService {
     @InjectRepository(ChannelHistory)
     private readonly channelHistoryRepository: Repository<ChannelHistory>,
 
-    @ConnectedSocket()
-    private chatGateway: ChatGateway,
-
     private readonly connection: Connection,
   ) {}
 
@@ -43,6 +40,7 @@ export class ChannelHistoryService {
         contents: createChannelHistoryDto.contents,
       });
 
+      await queryRunner.commitTransaction();
       return result;
     } catch (error) {
       await queryRunner.rollbackTransaction();
