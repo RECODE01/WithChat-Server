@@ -8,7 +8,7 @@ import { User } from '../users/entities/user.entity';
 import { ChatModule } from 'src/chat/chat.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ChannelHistory, User]), ChatModule],
+  imports: [TypeOrmModule.forFeature([User, ChannelHistory]), ChatModule],
   controllers: [ChannelHistoryController],
   providers: [ChannelHistoryService, ChatGateway],
 })

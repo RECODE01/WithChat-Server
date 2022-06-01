@@ -27,8 +27,8 @@ export class ChannelHistoryController {
   // }
 
   @Post()
-  // @UseGuards(AuthAccessGuard)
-  // @ApiBearerAuth('access-token')
+  @UseGuards(AuthAccessGuard)
+  @ApiBearerAuth('access-token')
   @ApiOperation({
     summary: '채팅 메세지 api',
     description: '채팅 메세지를 보낸다',

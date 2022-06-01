@@ -5,8 +5,7 @@ import { ChannelHistory } from 'src/apis/channel-history/entities/channel-histor
 import { ChatGateway } from './chat.gateway';
 
 @Module({
-  imports: [ChannelHistoryService],
-  providers: [ChatGateway, ChannelHistoryService],
-  exports: [ChatGateway, ChannelHistoryService],
+  providers: [ChatGateway],
+  exports: [ChatGateway],
 })
 export class ChatModule {}

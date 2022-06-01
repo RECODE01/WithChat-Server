@@ -1,8 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ConnectedSocket } from '@nestjs/websockets';
-import { channel } from 'diagnostics_channel';
-import { Socket } from 'socket.io';
 import { ChatGateway } from 'src/chat/chat.gateway';
 import { Repository } from 'typeorm';
 import { ICurrentUser } from '../auth/gql-user.param';
@@ -19,7 +17,7 @@ export class ChannelHistoryService {
     private readonly channelHistoryRepository: Repository<ChannelHistory>,
 
     @ConnectedSocket()
-    private client: Socket,
+    private chatGateway: ChatGateway,
   ) {}
 
   createChannelHistory = async (
@@ -30,8 +28,8 @@ export class ChannelHistoryService {
       where: { id: '8eca01cc-e21f-42f2-b161-e133ea31b029' },
     });
 
-    this.client.broadcast.emit(createChannelHistoryDto.channelId, [
-      user,
+    this.chatGateway.client.broadcast.emit(createChannelHistoryDto.channelId, [
+      // user,
       createChannelHistoryDto.contents,
     ]);
   };
