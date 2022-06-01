@@ -6,7 +6,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CurrentUser, ICurrentUser } from '../auth/gql-user.param';
-import { ChattingRoom } from '../chatting-room/entities/chatting-room.entity';
+import { ChattingServer } from '../chatting-server/entities/chatting-server.entity';
 import { CreateChattingChannelDto } from './dto/create-chatting-channel.dto';
 import { UpdateChattingChannelDto } from './dto/update-chatting-channel.dto';
 import { ChattingChannel } from './entities/chatting-channel.entity';
@@ -16,8 +16,8 @@ export class ChattingChannelService {
   constructor(
     @InjectRepository(ChattingChannel)
     private readonly chattingChannelRepository: Repository<ChattingChannel>,
-    @InjectRepository(ChattingRoom)
-    private readonly chattingRoomRepository: Repository<ChattingRoom>,
+    @InjectRepository(ChattingServer)
+    private readonly chattingRoomRepository: Repository<ChattingServer>,
   ) {}
   async createChattingChannel(
     createChattingChannelDto: CreateChattingChannelDto,

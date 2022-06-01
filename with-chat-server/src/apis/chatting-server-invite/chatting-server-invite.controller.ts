@@ -15,7 +15,7 @@ import {
 } from '@nestjs/swagger';
 import { AuthAccessGuard } from '../auth/gql-auth.guard';
 import { CurrentUser } from '../auth/gql-user.param';
-import { ChattingRoomInviteService } from './chatting-room-invite.service';
+import { ChattingRoomInviteService } from './chatting-server-invite.service';
 import { Response } from 'express';
 @ApiTags('채팅 서버 초대 API')
 @Controller('chatting-room-invite')

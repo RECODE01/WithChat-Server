@@ -20,7 +20,7 @@ import {
 } from '@nestjs/swagger';
 import { AuthAccessGuard } from '../auth/gql-auth.guard';
 import { CurrentUser, ICurrentUser } from '../auth/gql-user.param';
-import { ChattingRoomService } from './chatting-room.service';
+import { ChattingRoomService } from './chatting-server.service';
 import {
   ChattingRoomResult,
   MyChattingRoomList,
@@ -29,7 +29,7 @@ import { CreateChattingRoomDto } from './dto/create-chatting-room.dto';
 import { GrantUserAuthorityDto } from './dto/grant-user-authority.dto';
 import { UpdateChattingRoomDto } from './dto/update-chatting-room.dto';
 
-@Controller('chatting-room')
+@Controller('chatting-server')
 @ApiTags('채팅 서버 API')
 export class ChattingRoomController {
   constructor(private readonly chattingRoomService: ChattingRoomService) {}

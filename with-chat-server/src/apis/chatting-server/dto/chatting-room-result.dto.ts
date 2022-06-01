@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ChattingRoom } from '../entities/chatting-room.entity';
+import { ChattingServer } from '../entities/chatting-server.entity';
 
 export class ChattingRoomResult {
   @ApiProperty({
@@ -17,7 +17,7 @@ export class ChattingRoomResult {
       updatedAt: '2022-05-02T02:39:42.161Z',
     },
   })
-  data: ChattingRoom;
+  data: ChattingServer;
 }
 
 export class MyChattingRoomList {
@@ -52,5 +52,5 @@ export class MyChattingRoomList {
       },
     ],
   })
-  data: ChattingRoom[];
+  data: ChattingServer[];
 }

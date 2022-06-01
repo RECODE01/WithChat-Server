@@ -1,4 +1,4 @@
-import { ChattingRoom } from 'src/apis/chatting-room/entities/chatting-room.entity';
+import { ChattingServer } from 'src/apis/chatting-server/entities/chatting-server.entity';
 import { User } from 'src/apis/users/entities/user.entity';
 import {
   Column,
@@ -9,12 +9,12 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class ChattingRoomInvite {
+export class ChattingServerInvite {
   @PrimaryGeneratedColumn('uuid')
   id: string;
   @JoinColumn()
-  @ManyToOne((type) => ChattingRoom, (room) => room.id, { eager: true })
-  chattingRoom: ChattingRoom;
+  @ManyToOne((type) => ChattingServer, (server) => server.id, { eager: true })
+  chattingServer: ChattingServer;
   @JoinColumn()
   @ManyToOne((type) => User, (user) => user.id, { eager: true })
   user: User;
