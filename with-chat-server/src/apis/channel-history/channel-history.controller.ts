@@ -111,7 +111,7 @@ export class ChannelHistoryController {
       });
   }
 
-  @Get()
+  @Get('/new')
   @UseGuards(AuthAccessGuard)
   @ApiBearerAuth('access-token')
   @ApiOperation({
