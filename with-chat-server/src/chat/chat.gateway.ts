@@ -7,7 +7,6 @@ import {
   WsResponse,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { ChannelHistoryService } from 'src/apis/channel-history/channel-history.service';
 
 @WebSocketGateway({
   cors: {
@@ -17,13 +16,16 @@ import { ChannelHistoryService } from 'src/apis/channel-history/channel-history.
 export class ChatGateway {
   @WebSocketServer()
   server: Server;
+
+  @WebSocketServer()
+  client: Socket;
+
   wsClients = [];
   handleConnection(client: Socket) {
     this.wsClients.push(client);
   }
 
-  // constructor(private readonly channelHistoryService: ChannelHistoryService) {}
-  @SubscribeMessage('hihi')
+  @SubscribeMessage('join')
   connectSomeone(@MessageBody() data: string) {
     const [nickname, room] = data;
     console.log(`${nickname}님이 코드: ${room}방에 접속했습니다.`);
@@ -31,15 +33,10 @@ export class ChatGateway {
     this.server.emit('comeOn' + room, comeOn);
   }
 
-  @SubscribeMessage('send')
-  sendMessage(@MessageBody() data: string, @ConnectedSocket() client: Socket) {
-    const [room, nickname, message] = data;
-    console.log(`${client.id} : ${data}`);
-    client.broadcast.emit(room, [nickname, message]);
-    // this.channelHistoryService.createChannelHistory(
-    //   message,
-    //   client.id,
-    //   nickname,
-    // );
-  }
+  // @SubscribeMessage('send')
+  // sendMessage(@MessageBody() data: string, @ConnectedSocket() client: Socket) {
+  //   const [room, nickname, message] = data;
+  //   console.log(`${client.id} : ${data}`);
+  //   client.broadcast.emit(room, [nickname, message]);
+  // }
 }

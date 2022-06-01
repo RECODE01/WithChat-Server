@@ -17,13 +17,13 @@ export class ChattingChannelService {
     @InjectRepository(ChattingChannel)
     private readonly chattingChannelRepository: Repository<ChattingChannel>,
     @InjectRepository(ChattingServer)
-    private readonly chattingRoomRepository: Repository<ChattingServer>,
+    private readonly chattingServerRepository: Repository<ChattingServer>,
   ) {}
   async createChattingChannel(
     createChattingChannelDto: CreateChattingChannelDto,
     currentUser: ICurrentUser,
   ) {
-    const server = await this.chattingRoomRepository.findOne({
+    const server = await this.chattingServerRepository.findOne({
       where: { id: createChattingChannelDto.serverId },
     });
     if (!server) throw new BadRequestException('서버 주소가 잘못되었습니다.');
