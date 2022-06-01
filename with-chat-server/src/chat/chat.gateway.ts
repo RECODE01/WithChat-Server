@@ -23,7 +23,7 @@ export class ChatGateway {
   }
 
   // constructor(private readonly channelHistoryService: ChannelHistoryService) {}
-  @SubscribeMessage('hihi')
+  @SubscribeMessage('join')
   connectSomeone(@MessageBody() data: string) {
     const [nickname, room] = data;
     console.log(`${nickname}님이 코드: ${room}방에 접속했습니다.`);
