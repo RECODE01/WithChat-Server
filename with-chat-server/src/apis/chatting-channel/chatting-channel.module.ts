@@ -3,10 +3,10 @@ import { ChattingChannelService } from './chatting-channel.service';
 import { ChattingChannelController } from './chatting-channel.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ChattingChannel } from './entities/chatting-channel.entity';
-import { ChattingRoom } from '../chatting-room/entities/chatting-room.entity';
+import { ChattingServer } from '../chatting-server/entities/chatting-server.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ChattingChannel, ChattingRoom])],
+  imports: [TypeOrmModule.forFeature([ChattingChannel, ChattingServer])],
   controllers: [ChattingChannelController],
   providers: [ChattingChannelService],
 })
