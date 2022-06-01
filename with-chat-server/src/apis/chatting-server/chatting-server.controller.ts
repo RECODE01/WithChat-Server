@@ -10,6 +10,7 @@ import {
   Patch,
   ConflictException,
   Query,
+  Param,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -31,7 +32,7 @@ import { UpdateChattingRoomDto } from './dto/update-chatting-room.dto';
 
 @Controller('chatting-server')
 @ApiTags('채팅 서버 API')
-export class ChattingRoomController {
+export class ChattingServerController {
   constructor(private readonly chattingRoomService: ChattingRoomService) {}
 
   @UseGuards(AuthAccessGuard)
@@ -75,6 +76,30 @@ export class ChattingRoomController {
         res.status(HttpStatus.OK).json({ success: true, result: result });
       });
   }
+
+  // @UseGuards(AuthAccessGuard)
+  @Get('/:serverId')
+  // @ApiBearerAuth('access-token')
+  @ApiOperation({
+    summary: '채팅 서버 상세 정보 조회 API',
+    description: '채팅 서버 서버의 상세 정보를 조회한다.',
+  })
+  @ApiOkResponse({
+    description: '채팅 서버 조회 성공',
+    type: MyChattingRoomList,
+  })
+  fetchChattingServerDetail(
+    @Res() res,
+    @CurrentUser() currentUser: ICurrentUser,
+    @Param('serverId') serverId: string,
+  ) {
+    return this.chattingRoomService
+      .fetchChattingServerDetail(currentUser, serverId)
+      .then((result) => {
+        res.status(HttpStatus.OK).json({ success: true, ...result });
+      });
+  }
+
   @UseGuards(AuthAccessGuard)
   @Patch('')
   @ApiOperation({
