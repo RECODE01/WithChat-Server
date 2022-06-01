@@ -33,15 +33,18 @@ export class ChannelHistoryService {
       });
       if (!user) throw new ConflictException('유저 정보가 없습니다');
       console.log(user);
-      const result = await queryRunner.manager.save(ChannelHistory, {
-        writer: { id: user.id },
-        channel: { id: createChannelHistoryDto.channelId },
-        type: createChannelHistoryDto.type,
-        contents: createChannelHistoryDto.contents,
-      });
+
+      for (let i = 0; i < createChannelHistoryDto.messages.length; i++) {
+        await queryRunner.manager.save(ChannelHistory, {
+          writer: { id: user.id },
+          channel: { id: createChannelHistoryDto.channelId },
+          type: createChannelHistoryDto.messages[i].type,
+          contents: createChannelHistoryDto.messages[i].contents,
+        });
+      }
 
       await queryRunner.commitTransaction();
-      return result;
+      return true;
     } catch (error) {
       await queryRunner.rollbackTransaction();
       throw error;

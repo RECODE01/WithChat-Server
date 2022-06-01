@@ -109,7 +109,9 @@ export class ChannelHistoryController {
     return this.channelHistoryService
       .createChannelHistory(createChannelHistoryDto, currentUser)
       .then((result) => {
-        res.status(HttpStatus.CREATED).json({ success: true, user: result });
+        res
+          .status(HttpStatus.CREATED)
+          .json({ success: true, message: '채팅 전송 성공' });
       });
   }
 }
