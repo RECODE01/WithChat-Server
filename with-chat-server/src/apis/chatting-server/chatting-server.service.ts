@@ -115,4 +115,25 @@ export class ChattingRoomService {
     );
     return result.affected > 0;
   }
+
+  async fetchChattingServerDetail(currentUser: ICurrentUser, serverId: string) {
+    const result = await this.chattingRoomRepository.findOne({
+      where: { id: serverId },
+    });
+    const users = result.users.map((el) => {
+      const { password, year, month, day, certified, deletedAt, ...info } =
+        el.user;
+      return info;
+    });
+    const returnVal = {
+      id: result.id,
+      name: result.name,
+      image: result.image,
+      users: users,
+      channels: result.channels,
+    };
+    console.log(returnVal);
+
+    return returnVal;
+  }
 }

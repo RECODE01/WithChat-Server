@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ChattingRoomService } from './chatting-server.service';
-import { ChattingRoomController } from './chatting-server.controller';
+import { ChattingServerController } from './chatting-server.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import {
   ChattingServer,
@@ -13,7 +13,7 @@ import { User } from '../users/entities/user.entity';
   imports: [
     TypeOrmModule.forFeature([ChattingServer, User, ChattingServerUserDetail]),
   ],
-  controllers: [ChattingRoomController],
+  controllers: [ChattingServerController],
   providers: [ChattingRoomService, AuthModule],
 })
 export class ChattingRoomModule {}
