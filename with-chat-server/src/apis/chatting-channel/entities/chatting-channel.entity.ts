@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ChattingRoom } from 'src/apis/chatting-room/entities/chatting-room.entity';
+import { ChattingServer } from 'src/apis/chatting-server/entities/chatting-server.entity';
 import { ChannelHistory } from 'src/apis/channel-history/entities/channel-history.entity';
 import {
   CreateDateColumn,
@@ -18,8 +18,8 @@ export class ChattingChannel {
   id: string;
 
   @JoinColumn()
-  @ManyToOne((type) => ChattingRoom, (room) => room.id)
-  server: ChattingRoom;
+  @ManyToOne((type) => ChattingServer, (server) => server.id)
+  server: ChattingServer;
 
   @CreateDateColumn()
   @ApiProperty({ description: '채팅 채널 생성 일시' })

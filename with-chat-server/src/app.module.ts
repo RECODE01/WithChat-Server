@@ -8,9 +8,9 @@ import { FriendModule } from './apis/friend/friend.module';
 import { FriendRequestModule } from './apis/friend-request/friend-request.module';
 import { ConfigModule } from '@nestjs/config';
 import { FileModule } from './apis/file/file.module';
-import { ChattingRoomModule } from './apis/chatting-room/chatting-room.module';
+import { ChattingRoomModule } from './apis/chatting-server/chatting-server.module';
 import { ChatGateway } from './chat/chat.gateway';
-import { ChattingRoomInviteModule } from './apis/chatting-room-invite/chatting-room-invite.module';
+import { ChattingRoomInviteModule } from './apis/chatting-server-invite/chatting-server-invite.module';
 import { ChattingChannelModule } from './apis/chatting-channel/chatting-channel.module';
 import { ChannelHistoryModule } from './apis/channel-history/channel-history.module';
 

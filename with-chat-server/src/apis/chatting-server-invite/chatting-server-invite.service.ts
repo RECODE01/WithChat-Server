@@ -8,33 +8,33 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Connection } from 'typeorm';
 import { ICurrentUser } from '../auth/gql-user.param';
-import { ChattingRoomUsersDetail } from '../chatting-room/entities/chatting-room.entity';
-import { ChattingRoomInvite } from './entities/chatting-room-invite.entity';
+import { ChattingServerUserDetail } from '../chatting-server/entities/chatting-server.entity';
+import { ChattingServerInvite } from './entities/chatting-server-invite.entity';
 
 @Injectable()
 export class ChattingRoomInviteService {
   constructor(
-    @InjectRepository(ChattingRoomInvite)
-    private readonly chattingRoomInviteRepository: Repository<ChattingRoomInvite>,
+    @InjectRepository(ChattingServerInvite)
+    private readonly chattingRoomInviteRepository: Repository<ChattingServerInvite>,
     private readonly connection: Connection,
   ) {}
   async createChattingRoomInvite(
     targetId: string,
-    chattingRoomId: string,
+    chattingServerId: string,
     currentUser: ICurrentUser,
   ) {
     const isSent = await this.chattingRoomInviteRepository.findOne({
       where: {
-        chattingRoom: { id: chattingRoomId },
+        chattingServer: { id: chattingServerId },
         user: { id: targetId },
         isAccepted: false,
       },
     });
 
     if (isSent) throw new ConflictException('이미 요청된 데이터가 존재합니다.');
-    console.log(chattingRoomId, targetId);
+    console.log(chattingServerId, targetId);
     return await this.chattingRoomInviteRepository.save({
-      chattingRoom: { id: chattingRoomId },
+      chattingRoom: { id: chattingServerId },
       user: { id: targetId },
     });
   }
@@ -43,7 +43,7 @@ export class ChattingRoomInviteService {
     await queryRunner.connect();
     await queryRunner.startTransaction('SERIALIZABLE');
     try {
-      const request = await queryRunner.manager.findOne(ChattingRoomInvite, {
+      const request = await queryRunner.manager.findOne(ChattingServerInvite, {
         where: { id: inviteId, isAccepted: false },
       });
 
@@ -54,7 +54,7 @@ export class ChattingRoomInviteService {
         throw new ForbiddenException('권한이 없습니다.');
 
       const updateRequest = await queryRunner.manager.update(
-        ChattingRoomInvite,
+        ChattingServerInvite,
         { id: inviteId },
         { isAccepted: true },
       );
@@ -63,13 +63,13 @@ export class ChattingRoomInviteService {
           '서버 오류가 발생하였습니다.\r\n 다시 시도해 주세요',
         );
       const chattingRoomId = await queryRunner.manager
-        .findOne(ChattingRoomInvite, {
+        .findOne(ChattingServerInvite, {
           where: { id: inviteId },
         })
-        .then((invite) => invite.chattingRoom.id);
+        .then((invite) => invite.chattingServer.id);
 
       console.log(chattingRoomId, 'chattingRoomId');
-      const result = await queryRunner.manager.save(ChattingRoomUsersDetail, {
+      const result = await queryRunner.manager.save(ChattingServerUserDetail, {
         master: { id: chattingRoomId },
         user: { id: currentUser.id },
         auth: 2,

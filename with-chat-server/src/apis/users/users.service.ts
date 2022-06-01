@@ -19,18 +19,18 @@ import * as nodemailer from 'nodemailer';
 import { FindEmailDto } from './dto/find-email.dto';
 import { ResetPwdSendMailDTO, UpdatePwdDTO } from './dto/reset-password.dto';
 import { FriendRequest } from '../friend-request/entities/friend-request.entity';
-import { ChattingRoom } from '../chatting-room/entities/chatting-room.entity';
-import { ChattingRoomInvite } from '../chatting-room-invite/entities/chatting-room-invite.entity';
+import { ChattingServer } from '../chatting-server/entities/chatting-server.entity';
+import { ChattingServerInvite } from '../chatting-server-invite/entities/chatting-server-invite.entity';
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     @InjectRepository(FriendRequest)
     private readonly friendRequestRepository: Repository<FriendRequest>,
-    @InjectRepository(ChattingRoom)
-    private readonly chattingRoomRepository: Repository<ChattingRoom>,
-    @InjectRepository(ChattingRoomInvite)
-    private readonly chattingRoomInviteRepository: Repository<ChattingRoomInvite>,
+    @InjectRepository(ChattingServer)
+    private readonly chattingServerRepository: Repository<ChattingServer>,
+    @InjectRepository(ChattingServerInvite)
+    private readonly chattingRoomInviteRepository: Repository<ChattingServerInvite>,
     @InjectRepository(Token)
     private readonly tokenRepository: Repository<Token>,
     private readonly friendService: FriendService,
@@ -169,7 +169,7 @@ export class UsersService {
     // @Column({ type: Boolean, default: false })
     // isAccepted: boolean;
     console.log('====================4====================');
-    const serverList = this.chattingRoomRepository
+    const serverList = this.chattingServerRepository
       .createQueryBuilder('chattingRoom')
       .leftJoin('chattingRoom.users', 'chattingRoomUserDetail')
       .where('chattingRoomUserDetail.user = :userId', {

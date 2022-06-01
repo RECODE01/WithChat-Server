@@ -8,19 +8,19 @@ import { CreateChattingRoomDto } from './dto/create-chatting-room.dto';
 import { GrantUserAuthorityDto } from './dto/grant-user-authority.dto';
 import { UpdateChattingRoomDto } from './dto/update-chatting-room.dto';
 import {
-  ChattingRoom,
-  ChattingRoomUsersDetail,
-} from './entities/chatting-room.entity';
+  ChattingServer,
+  ChattingServerUserDetail,
+} from './entities/chatting-server.entity';
 
 @Injectable()
 export class ChattingRoomService {
   constructor(
-    @InjectRepository(ChattingRoom)
-    private readonly chattingRoomRepository: Repository<ChattingRoom>,
+    @InjectRepository(ChattingServer)
+    private readonly chattingRoomRepository: Repository<ChattingServer>,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-    @InjectRepository(ChattingRoomUsersDetail)
-    private readonly chattingRoomUsersDetailRepository: Repository<ChattingRoomUsersDetail>,
+    @InjectRepository(ChattingServerUserDetail)
+    private readonly chattingRoomUsersDetailRepository: Repository<ChattingServerUserDetail>,
   ) {}
 
   async createChattingRoom(

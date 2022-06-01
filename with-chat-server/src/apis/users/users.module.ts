@@ -8,8 +8,8 @@ import { AuthModule } from '../auth/auth.module';
 import { Friend, FriendDetail } from '../friend/entities/friend.entity';
 import { FriendService } from '../friend/friend.service';
 import { FriendRequest } from '../friend-request/entities/friend-request.entity';
-import { ChattingRoomInvite } from '../chatting-room-invite/entities/chatting-room-invite.entity';
-import { ChattingRoom } from '../chatting-room/entities/chatting-room.entity';
+import { ChattingServerInvite } from '../chatting-server-invite/entities/chatting-server-invite.entity';
+import { ChattingServer } from '../chatting-server/entities/chatting-server.entity';
 // import { MailerModule } from '@nestjs-modules/mailer';
 
 @Module({
@@ -20,8 +20,8 @@ import { ChattingRoom } from '../chatting-room/entities/chatting-room.entity';
       FriendDetail,
       Token,
       FriendRequest,
-      ChattingRoomInvite,
-      ChattingRoom,
+      ChattingServerInvite,
+      ChattingServer,
     ]),
     // MailerModule.forRoot({
     //   transport: {

@@ -16,7 +16,7 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class ChattingRoom {
+export class ChattingServer {
   @PrimaryGeneratedColumn('uuid')
   @ApiProperty({
     description: '채팅 서버 ID',
@@ -38,11 +38,11 @@ export class ChattingRoom {
 
   @JoinColumn()
   @OneToMany(
-    (type) => ChattingRoomUsersDetail,
-    (chattingRoomUser) => chattingRoomUser.master,
+    (type) => ChattingServerUserDetail,
+    (chattingServerUser) => chattingServerUser.master,
     { eager: true, nullable: true },
   )
-  users: ChattingRoomUsersDetail[];
+  users: ChattingServerUserDetail[];
 
   @JoinColumn()
   @OneToMany((type) => ChattingChannel, (channel) => channel.id, {
@@ -64,12 +64,12 @@ export class ChattingRoom {
 }
 
 @Entity()
-export class ChattingRoomUsersDetail {
+export class ChattingServerUserDetail {
   @PrimaryGeneratedColumn('uuid')
   id: string;
   @JoinColumn()
-  @ManyToOne((type) => ChattingRoom, (master) => master.id)
-  master: ChattingRoom;
+  @ManyToOne((type) => ChattingServer, (master) => master.id)
+  master: ChattingServer;
 
   @JoinColumn()
   @ManyToOne((type) => User, (user) => user.id, { eager: true })

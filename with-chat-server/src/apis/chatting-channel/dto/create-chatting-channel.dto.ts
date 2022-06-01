@@ -1,4 +1,4 @@
-import { ChattingRoom } from 'src/apis/chatting-room/entities/chatting-room.entity';
+import { ChattingServer } from 'src/apis/chatting-server/entities/chatting-server.entity';
 
 export class CreateChattingChannelDto {
   serverId: string;
