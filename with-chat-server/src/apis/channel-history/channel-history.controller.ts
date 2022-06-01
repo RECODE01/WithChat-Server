@@ -72,7 +72,7 @@ export class ChannelHistoryController {
       },
     },
   })
-  fetchChannelgHistory(
+  fetchChannelHistory(
     @Res() res,
     @Query('lastIdx') lastIdx: number,
     @Query('channelId') channelId: string,

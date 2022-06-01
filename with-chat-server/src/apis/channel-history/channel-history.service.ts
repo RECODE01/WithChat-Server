@@ -55,7 +55,9 @@ export class ChannelHistoryService {
       .createQueryBuilder('channelHistory')
       .leftJoinAndSelect('channelHistory.writer', 'users')
       .where('channelHistory.channelId = :channelId', { channelId })
-      .andWhere('channelHistory.idx < :lastIdx', { lastIdx })
+      .andWhere(lastIdx > -1 ? 'channelHistory.idx < :lastIdx' : '1 = 1', {
+        lastIdx,
+      })
       .orderBy('channelHistory.createdAt', 'ASC')
       .limit(20)
       .getMany();
