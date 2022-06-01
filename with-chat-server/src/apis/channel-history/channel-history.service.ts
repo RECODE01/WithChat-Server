@@ -29,7 +29,7 @@ export class ChannelHistoryService {
     });
 
     this.chatGateway.client.broadcast.emit(createChannelHistoryDto.channelId, [
-      // user,
+      user,
       createChannelHistoryDto.contents,
     ]);
   };

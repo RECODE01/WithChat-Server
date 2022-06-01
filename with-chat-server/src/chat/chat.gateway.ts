@@ -33,10 +33,10 @@ export class ChatGateway {
     this.server.emit('comeOn' + room, comeOn);
   }
 
-  @SubscribeMessage('send')
-  sendMessage(@MessageBody() data: string, @ConnectedSocket() client: Socket) {
-    const [room, nickname, message] = data;
-    console.log(`${client.id} : ${data}`);
-    client.broadcast.emit(room, [nickname, message]);
-  }
+  // @SubscribeMessage('send')
+  // sendMessage(@MessageBody() data: string, @ConnectedSocket() client: Socket) {
+  //   const [room, nickname, message] = data;
+  //   console.log(`${client.id} : ${data}`);
+  //   client.broadcast.emit(room, [nickname, message]);
+  // }
 }
