@@ -9,13 +9,17 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  PrimaryColumn,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
 @Entity()
 export class ChannelHistory {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+
+  @Column({ type: 'int', default: 1 })
   @ApiProperty({
     description: '채팅 Index',
     example: '1',
