@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ConnectedSocket } from '@nestjs/websockets';
 import { Socket } from 'socket.io';
 import { ChatGateway } from 'src/chat/chat.gateway';
-import { Connection, Repository } from 'typeorm';
+import { Connection, createQueryBuilder, Repository } from 'typeorm';
 import { ICurrentUser } from '../auth/gql-user.param';
 import { User } from '../users/entities/user.entity';
 import { CreateChannelHistoryDto } from './dto/create-channel-history.dto';
@@ -28,15 +28,21 @@ export class ChannelHistoryService {
     await queryRunner.connect();
     await queryRunner.startTransaction('SERIALIZABLE');
     try {
-      const user = await queryRunner.manager.findOne(User, {
-        where: { id: currentUser.id },
-      });
-      if (!user) throw new ConflictException('유저 정보가 없습니다');
-      console.log(user);
+      const prevIdx = await queryRunner.manager
+        .createQueryBuilder(ChannelHistory, 'channelHistory')
+        .where('channelHistory.channelId = :channelId', {
+          channelId: createChannelHistoryDto.channelId,
+        })
+        .orderBy('channelHistory.createdAt', 'DESC')
+        .getOne()
+        .then((res) => res.idx);
+
+      console.log(prevIdx);
 
       for (let i = 0; i < createChannelHistoryDto.messages.length; i++) {
         await queryRunner.manager.save(ChannelHistory, {
-          writer: { id: user.id },
+          idx: prevIdx + 1,
+          writer: { id: currentUser.id },
           channel: { id: createChannelHistoryDto.channelId },
           type: createChannelHistoryDto.messages[i].type,
           contents: createChannelHistoryDto.messages[i].contents,
@@ -63,6 +69,28 @@ export class ChannelHistoryService {
       })
       .orderBy('channelHistory.createdAt', 'ASC')
       .limit(20)
+      .getMany();
+
+    return result.map((el) => {
+      const { password, year, month, day, certified, deletedAt, ...writer } =
+        el.writer;
+      return { ...el, writer: writer };
+    });
+  }
+
+  async getNewChatting(channelId: string) {
+    const currIdx = await this.channelHistoryRepository
+      .createQueryBuilder('channelHistory')
+      .where('channelHistory.channelId = :channelId', { channelId })
+      .orderBy('channelHistory.createdAt', 'DESC')
+      .getOne()
+      .then((res) => res.idx);
+
+    const result = await this.channelHistoryRepository
+      .createQueryBuilder('channelHistory')
+      .leftJoinAndSelect('channelHistory.writer', 'users')
+      .where('channelHistory = :channelId', { channelId })
+      .andWhere('channelHistory.idx = :idx', { idx: currIdx })
       .getMany();
 
     return result.map((el) => {
