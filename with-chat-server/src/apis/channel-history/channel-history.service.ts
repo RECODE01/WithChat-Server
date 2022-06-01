@@ -49,4 +49,21 @@ export class ChannelHistoryService {
       await queryRunner.release();
     }
   };
+
+  async getChannelHistory(lastIdx: number, channelId: string) {
+    const result = await this.channelHistoryRepository
+      .createQueryBuilder('channelHistory')
+      .leftJoinAndSelect('channelHistory.writer', 'users')
+      .where('channelHistory.channelId = :channelId', { channelId })
+      .andWhere('channelHistory.idx < :lastIdx', { lastIdx })
+      .orderBy('channelHistory.createdAt', 'ASC')
+      .limit(20)
+      .getMany();
+
+    return result.map((el) => {
+      const { password, year, month, day, certified, deletedAt, ...writer } =
+        el.writer;
+      return { ...el, writer: writer };
+    });
+  }
 }
