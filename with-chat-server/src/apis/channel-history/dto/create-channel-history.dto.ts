@@ -9,16 +9,12 @@ export class CreateChannelHistoryDto {
   channelId: string;
 
   @ApiProperty({
-    description: '이',
+    description: 'message 배열',
     required: true,
-    example: 'text',
+    example: [
+      { contents: '메세지입니다', type: 'text' },
+      { contents: 'https://image.url', type: 'image' },
+    ],
   })
-  type: string;
-
-  @ApiProperty({
-    description: '채팅 메세지',
-    required: true,
-    example: 'Hello WithChat!',
-  })
-  contents: string;
+  messages: { contents: string; type: string }[];
 }
