@@ -52,7 +52,7 @@ export class ChattingServerController {
     @CurrentUser() currentUser: ICurrentUser,
   ) {
     return this.chattingRoomService
-      .createChattingRoom(createChattingRoomDto, currentUser)
+      .createChattingServer(createChattingRoomDto, currentUser)
       .then((result) => {
         res.status(HttpStatus.OK).json({ success: true, result: result });
       });
