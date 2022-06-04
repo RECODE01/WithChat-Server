@@ -71,6 +71,8 @@ export class ChannelHistoryService {
       .limit(20)
       .getMany();
 
+    if (!result) return [];
+
     return result.map((el) => {
       const { password, year, month, day, certified, deletedAt, ...writer } =
         el.writer;
