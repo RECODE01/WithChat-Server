@@ -21,8 +21,8 @@ export class ChannelHistoryController {
   constructor(private readonly channelHistoryService: ChannelHistoryService) {}
 
   @Get()
-  @UseGuards(AuthAccessGuard)
-  @ApiBearerAuth('access-token')
+  // @UseGuards(AuthAccessGuard)
+  // @ApiBearerAuth('access-token')
   @ApiOperation({
     summary: '채팅 메세지 조회 api',
     description: '채팅 메세지를 조회한다',
