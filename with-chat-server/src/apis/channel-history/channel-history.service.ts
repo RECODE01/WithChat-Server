@@ -28,16 +28,13 @@ export class ChannelHistoryService {
     await queryRunner.connect();
     await queryRunner.startTransaction('SERIALIZABLE');
     try {
-      const prevIdx = await queryRunner.manager
+      const lastMessage = await queryRunner.manager
         .createQueryBuilder(ChannelHistory, 'channelHistory')
-        .where('channelHistory.channelId = :channelId', {
-          channelId: createChannelHistoryDto.channelId,
-        })
         .orderBy('channelHistory.createdAt', 'DESC')
         .getOne()
-        .then((res) => res.idx);
+        .then((res) => res);
 
-      console.log(prevIdx);
+      const prevIdx = lastMessage ? lastMessage.idx : 1;
 
       for (let i = 0; i < createChannelHistoryDto.messages.length; i++) {
         await queryRunner.manager.save(ChannelHistory, {
