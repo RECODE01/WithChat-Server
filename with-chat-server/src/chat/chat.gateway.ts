@@ -16,11 +16,6 @@ export class ChatGateway {
   @WebSocketServer()
   server: Server;
 
-  wsClients = [];
-  handleConnection(client: Socket) {
-    this.wsClients.push(client);
-  }
-
   @SubscribeMessage('join')
   connectSomeone(@MessageBody() data: string) {
     const [user, channelId] = data;
