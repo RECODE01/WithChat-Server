@@ -112,8 +112,8 @@ export class ChannelHistoryController {
   }
 
   @Get('/new')
-  @UseGuards(AuthAccessGuard)
-  @ApiBearerAuth('access-token')
+  // @UseGuards(AuthAccessGuard)
+  // @ApiBearerAuth('access-token')
   @ApiOperation({
     summary: '신규 메세지 조회 api',
     description: '신규 메세지 조회',

@@ -79,19 +79,24 @@ export class ChannelHistoryService {
   }
 
   async getNewChatting(channelId: string) {
-    const currIdx = await this.channelHistoryRepository
+    const lastMessage = await this.channelHistoryRepository
       .createQueryBuilder('channelHistory')
       .where('channelHistory.channelId = :channelId', { channelId })
       .orderBy('channelHistory.createdAt', 'DESC')
       .getOne()
-      .then((res) => res.idx);
+      .then((res) => res);
 
+    if (!lastMessage) return [];
+
+    const currIdx = lastMessage.idx;
     const result = await this.channelHistoryRepository
       .createQueryBuilder('channelHistory')
       .leftJoinAndSelect('channelHistory.writer', 'users')
-      .where('channelHistory = :channelId', { channelId })
+      .where('channelHistory.channelId = :channelId', { channelId })
       .andWhere('channelHistory.idx = :idx', { idx: currIdx })
       .getMany();
+
+    console.log(result);
 
     return result.map((el) => {
       const { password, year, month, day, certified, deletedAt, ...writer } =
