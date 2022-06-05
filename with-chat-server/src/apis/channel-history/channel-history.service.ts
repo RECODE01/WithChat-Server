@@ -64,7 +64,7 @@ export class ChannelHistoryService {
       .andWhere(lastIdx > -1 ? 'channelHistory.idx < :lastIdx' : '1 = 1', {
         lastIdx,
       })
-      .orderBy('channelHistory.createdAt', 'ASC')
+      .orderBy('channelHistory.createdAt', 'DESC')
       .limit(20)
       .getMany();
 
