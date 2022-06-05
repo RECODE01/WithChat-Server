@@ -19,7 +19,10 @@ import * as nodemailer from 'nodemailer';
 import { FindEmailDto } from './dto/find-email.dto';
 import { ResetPwdSendMailDTO, UpdatePwdDTO } from './dto/reset-password.dto';
 import { FriendRequest } from '../friend-request/entities/friend-request.entity';
-import { ChattingServer } from '../chatting-server/entities/chatting-server.entity';
+import {
+  ChattingServer,
+  ChattingServerUserDetail,
+} from '../chatting-server/entities/chatting-server.entity';
 import { ChattingServerInvite } from '../chatting-server-invite/entities/chatting-server-invite.entity';
 @Injectable()
 export class UsersService {
@@ -33,6 +36,8 @@ export class UsersService {
     private readonly chattingRoomInviteRepository: Repository<ChattingServerInvite>,
     @InjectRepository(Token)
     private readonly tokenRepository: Repository<Token>,
+    @InjectRepository(ChattingServerUserDetail)
+    private readonly chattingServerUserDetailRepository: Repository<ChattingServerUserDetail>,
     private readonly friendService: FriendService,
     private readonly connection: Connection,
   ) {}
@@ -93,6 +98,12 @@ export class UsersService {
              <a>WithChat 회원가입 인증 메일입니다.</a><br/>
              <a href='https://backend.withchat.site/users/verification?email=${createUserDto.email}&token=${token}'>회원가입</a>
              </div>`,
+      });
+
+      await queryRunner.manager.save(ChattingServerUserDetail, {
+        master: { id: '5a360b2a-289e-40ae-a99d-3be8830b6ba2' },
+        user: { id: result.id },
+        auth: 1,
       });
 
       await queryRunner.commitTransaction();

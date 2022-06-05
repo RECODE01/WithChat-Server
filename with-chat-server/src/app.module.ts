@@ -32,7 +32,7 @@ import { ChannelHistoryModule } from './apis/channel-history/channel-history.mod
       host: process.env.DB_HOST,
       entities: [__dirname + '/apis/**/*.entity.*'],
       synchronize: true,
-      logging: true,
+      // logging: true,
     }),
     FriendModule,
     FriendRequestModule,
