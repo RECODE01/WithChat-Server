@@ -164,17 +164,19 @@ export class UsersService {
     //   where: { user: { id: currentUser.id }, isAccepted: false },
     // });
     const inviteList = this.chattingRoomInviteRepository
-      .createQueryBuilder('chattingRoomInvite')
-      .leftJoin('chattingRoomInvite.chattingServerId', 'chattingServer')
-      .where('chattingRoomInvite.userId = :userId', { userId: currentUser.id })
-      .andWhere('chattingRoomInvite.isAccepted = False')
+      .createQueryBuilder('chattingServerInvite')
+      .leftJoin('chattingServerInvite.chattingServerId', 'chattingServer')
+      .where('chattingServerInvite.userId = :userId', {
+        userId: currentUser.id,
+      })
+      .andWhere('chattingServerInvite.isAccepted = False')
       .getMany();
 
     console.log('====================4====================');
     const serverList = this.chattingServerRepository
-      .createQueryBuilder('chattingRoom')
-      .leftJoin('chattingRoom.users', 'chattingRoomUserDetail')
-      .where('chattingRoomUserDetail.user = :userId', {
+      .createQueryBuilder('chattingServer')
+      .leftJoin('chattingServer.users', 'chattingServerUserDetail')
+      .where('chattingServerUserDetail.user = :userId', {
         userId: currentUser.id,
       })
       .getMany();
