@@ -49,8 +49,8 @@ export class ChannelHistoryService {
 
       await queryRunner.commitTransaction();
       this.chatGateway.server.emit('message', [
-        createChannelHistoryDto.channelId,
         currentUser.id,
+        createChannelHistoryDto.channelId,
         createChannelHistoryDto.messages[0].contents,
       ]);
       return true;
