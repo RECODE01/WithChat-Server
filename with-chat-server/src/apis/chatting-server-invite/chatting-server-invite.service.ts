@@ -27,14 +27,13 @@ export class ChattingRoomInviteService {
       where: {
         chattingServer: { id: chattingServerId },
         user: { id: targetId },
-        isAccepted: false,
       },
     });
 
     if (isSent) throw new ConflictException('이미 요청된 데이터가 존재합니다.');
     console.log(chattingServerId, targetId);
     return await this.chattingRoomInviteRepository.save({
-      chattingRoom: { id: chattingServerId },
+      chattingServer: { id: chattingServerId },
       user: { id: targetId },
     });
   }
