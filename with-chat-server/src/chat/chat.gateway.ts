@@ -34,6 +34,6 @@ export class ChatGateway {
     const [user, channelId, contents] = data;
     console.log(`${client.id} : ${data}`);
     console.log('broadcast.emit');
-    client.broadcast.emit(channelId, [user, contents]);
+    client.broadcast.emit('message' + channelId, [user, contents]);
   }
 }

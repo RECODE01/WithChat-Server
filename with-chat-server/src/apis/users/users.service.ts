@@ -165,7 +165,7 @@ export class UsersService {
     // });
     const inviteList = this.chattingRoomInviteRepository
       .createQueryBuilder('chattingServerInvite')
-      .leftJoin('chattingServerInvite.chattingServerId', 'chattingServer')
+      // .leftJoin('chattingServerInvite.chattingServerId', 'chattingServer')
       .where('chattingServerInvite.userId = :userId', {
         userId: currentUser.id,
       })
