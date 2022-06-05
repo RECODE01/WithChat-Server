@@ -43,10 +43,10 @@ export class ChattingRoomInviteController {
     @Res() res: Response,
     @CurrentUser() currentUser,
     @Query('targetId') targetId: string,
-    @Query('chattingServerId') chattingRoomId: string,
+    @Query('chattingServerId') chattingServerId: string,
   ) {
     return this.chattingRoomInviteService
-      .createChattingRoomInvite(targetId, chattingRoomId, currentUser)
+      .createChattingRoomInvite(targetId, chattingServerId, currentUser)
       .then(() => {
         res
           .status(HttpStatus.CREATED)
