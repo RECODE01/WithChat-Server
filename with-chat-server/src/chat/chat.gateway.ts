@@ -30,6 +30,7 @@ export class ChatGateway {
 
   @SubscribeMessage('send')
   sendMessage(@MessageBody() data: string, @ConnectedSocket() client: Socket) {
+    console.log(data);
     const [user, channelId, contents] = data;
     console.log(`${client.id} : ${data}`);
     console.log('broadcast.emit');

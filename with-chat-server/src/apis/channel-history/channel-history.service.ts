@@ -18,6 +18,7 @@ export class ChannelHistoryService {
     private readonly channelHistoryRepository: Repository<ChannelHistory>,
 
     private readonly connection: Connection,
+    private chatGateway: ChatGateway,
   ) {}
 
   createChannelHistory = async (
@@ -47,6 +48,11 @@ export class ChannelHistoryService {
       }
 
       await queryRunner.commitTransaction();
+      this.chatGateway.server.emit('message', [
+        createChannelHistoryDto.channelId,
+        currentUser.id,
+        createChannelHistoryDto.messages[0].contents,
+      ]);
       return true;
     } catch (error) {
       await queryRunner.rollbackTransaction();

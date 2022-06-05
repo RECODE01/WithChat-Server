@@ -165,6 +165,7 @@ export class UsersService {
     // });
     const inviteList = this.chattingRoomInviteRepository
       .createQueryBuilder('chattingRoomInvite')
+      .leftJoin('chattingRoomInvite.chattingServerId', 'chattingServer')
       .where('chattingRoomInvite.userId = :userId', { userId: currentUser.id })
       .andWhere('chattingRoomInvite.isAccepted = False')
       .getMany();
