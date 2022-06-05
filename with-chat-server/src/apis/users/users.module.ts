@@ -9,7 +9,10 @@ import { Friend, FriendDetail } from '../friend/entities/friend.entity';
 import { FriendService } from '../friend/friend.service';
 import { FriendRequest } from '../friend-request/entities/friend-request.entity';
 import { ChattingServerInvite } from '../chatting-server-invite/entities/chatting-server-invite.entity';
-import { ChattingServer } from '../chatting-server/entities/chatting-server.entity';
+import {
+  ChattingServer,
+  ChattingServerUserDetail,
+} from '../chatting-server/entities/chatting-server.entity';
 // import { MailerModule } from '@nestjs-modules/mailer';
 
 @Module({
@@ -22,6 +25,7 @@ import { ChattingServer } from '../chatting-server/entities/chatting-server.enti
       FriendRequest,
       ChattingServerInvite,
       ChattingServer,
+      ChattingServerUserDetail,
     ]),
     // MailerModule.forRoot({
     //   transport: {
