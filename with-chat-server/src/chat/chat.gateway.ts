@@ -17,7 +17,7 @@ export class ChatGateway {
   server: Server;
 
   @SubscribeMessage('join')
-  connectSomeone(@MessageBody() data: string) {
+  connectSomeone(@MessageBody() data) {
     const [user, channelId] = data;
     console.log(`${user}님이 코드: ${channelId}방에 접속했습니다.`);
     const comeOn = `${user}님이 입장했습니다.`;

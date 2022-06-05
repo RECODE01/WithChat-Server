@@ -1,7 +1,6 @@
 import {
   Controller,
   HttpStatus,
-  Param,
   Post,
   Query,
   Res,
@@ -18,7 +17,7 @@ import { CurrentUser } from '../auth/gql-user.param';
 import { ChattingRoomInviteService } from './chatting-server-invite.service';
 import { Response } from 'express';
 @ApiTags('채팅 서버 초대 API')
-@Controller('chatting-room-invite')
+@Controller('chatting-server-invite')
 export class ChattingRoomInviteController {
   constructor(
     private readonly chattingRoomInviteService: ChattingRoomInviteService,
@@ -44,10 +43,10 @@ export class ChattingRoomInviteController {
     @Res() res: Response,
     @CurrentUser() currentUser,
     @Query('targetId') targetId: string,
-    @Query('chattingRoomId') chattingRoomId: string,
+    @Query('chattingServerId') chattingServerId: string,
   ) {
     return this.chattingRoomInviteService
-      .createChattingRoomInvite(targetId, chattingRoomId, currentUser)
+      .createChattingRoomInvite(targetId, chattingServerId, currentUser)
       .then(() => {
         res
           .status(HttpStatus.CREATED)
