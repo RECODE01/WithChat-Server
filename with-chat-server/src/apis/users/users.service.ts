@@ -32,7 +32,7 @@ export class UsersService {
     @InjectRepository(ChattingServer)
     private readonly chattingServerRepository: Repository<ChattingServer>,
     @InjectRepository(ChattingServerInvite)
-    private readonly chattingRoomInviteRepository: Repository<ChattingServerInvite>,
+    private readonly chattingServerInviteRepository: Repository<ChattingServerInvite>,
     @InjectRepository(Token)
     private readonly tokenRepository: Repository<Token>,
     @InjectRepository(ChattingServerUserDetail)
@@ -144,11 +144,9 @@ export class UsersService {
   };
 
   loggedInUser = async (currentUser: ICurrentUser) => {
-    console.log('====================1====================');
     const user = this.userRepository.findOne({
       where: { id: currentUser.id },
     });
-    console.log('====================2====================');
     const friendList = this.friendService.fetchMyFriends(currentUser);
     const friendRequestList = this.friendRequestRepository.find({
       where: {
@@ -156,23 +154,18 @@ export class UsersService {
         isAccepted: false,
       },
     });
-    console.log('====================3====================');
-    // const inviteList = this.chattingRoomInviteRepository.find({
-    //   where: { user: { id: currentUser.id }, isAccepted: false },
-    // });
-    // const inviteList = this.chattingRoomInviteRepository.find({
-    //   where: { user: { id: currentUser.id }, isAccepted: false },
-    // });
-    const inviteList = this.chattingRoomInviteRepository
+    const inviteList = this.chattingServerInviteRepository
       .createQueryBuilder('chattingServerInvite')
-      // .leftJoin('chattingServerInvite.chattingServerId', 'chattingServer')
+      .leftJoinAndSelect(
+        'chattingServerInvite.chattingServer',
+        'chattingServer',
+      )
       .where('chattingServerInvite.userId = :userId', {
         userId: currentUser.id,
       })
       .andWhere('chattingServerInvite.isAccepted = False')
       .getMany();
 
-    console.log('====================4====================');
     const serverList = this.chattingServerRepository
       .createQueryBuilder('chattingServer')
       .leftJoin('chattingServer.users', 'chattingServerUserDetail')
@@ -180,7 +173,6 @@ export class UsersService {
         userId: currentUser.id,
       })
       .getMany();
-    console.log('====================5====================');
 
     const result = await Promise.all([
       user,
@@ -189,16 +181,15 @@ export class UsersService {
       inviteList,
       serverList,
     ]).then((values) => {
-      console.log(values[0]);
-      console.log(values[1]);
-      console.log(values[2]);
-      console.log(values[3]);
-      console.log(values[4]);
+      console.log(values[3], '===================');
       return {
         user: values[0],
         friendList: values[1],
         friendRequestList: values[2],
-        inviteList: values[3],
+        inviteList: values[3].map((el) => {
+          const { isAccepted, ...rest } = el;
+          return rest;
+        }),
         serverList: values[4],
       };
     });
