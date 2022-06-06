@@ -60,7 +60,6 @@ export class ChattingChannelController {
     return await this.chattingChannelService
       .createChattingChannel(createChattingChannelDto, currentUser)
       .then((channel) => {
-        console.log(channel);
         return res
           .status(HttpStatus.OK)
           .json({ success: true, chattingChannel: channel });

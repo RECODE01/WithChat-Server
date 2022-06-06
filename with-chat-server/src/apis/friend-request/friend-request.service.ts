@@ -39,8 +39,6 @@ export class FriendRequestService {
     const queryRunner = this.connection.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction('SERIALIZABLE');
-    console.log(currentUser.id);
-    console.log(requestId);
     try {
       const request = await queryRunner.manager.findOne(FriendRequest, {
         where: { id: requestId, isAccepted: false },
