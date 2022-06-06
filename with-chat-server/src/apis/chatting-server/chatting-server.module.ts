@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ChattingRoomService } from './chatting-server.service';
+import { ChattingServerService } from './chatting-server.service';
 import { ChattingServerController } from './chatting-server.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import {
@@ -20,6 +20,6 @@ import { ChattingChannel } from '../chatting-channel/entities/chatting-channel.e
     ]),
   ],
   controllers: [ChattingServerController],
-  providers: [ChattingRoomService, AuthModule],
+  providers: [ChattingServerService, AuthModule],
 })
 export class ChattingRoomModule {}

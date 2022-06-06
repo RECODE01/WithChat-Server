@@ -1,13 +1,10 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ConnectedSocket } from '@nestjs/websockets';
-import { Socket } from 'socket.io';
 import { ChatGateway } from 'src/chat/chat.gateway';
-import { Connection, createQueryBuilder, Repository } from 'typeorm';
+import { Connection, Repository } from 'typeorm';
 import { ICurrentUser } from '../auth/gql-user.param';
 import { User } from '../users/entities/user.entity';
 import { CreateChannelHistoryDto } from './dto/create-channel-history.dto';
-import { UpdateChannelHistoryDto } from './dto/update-channel-history.dto';
 import { ChannelHistory } from './entities/channel-history.entity';
 
 @Injectable()
@@ -73,6 +70,8 @@ export class ChannelHistoryService {
       .orderBy('channelHistory.createdAt', 'DESC')
       .limit(20)
       .getMany();
+
+    console.log(result);
 
     if (!result) return [];
 
