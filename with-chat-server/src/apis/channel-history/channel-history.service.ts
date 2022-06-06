@@ -71,8 +71,6 @@ export class ChannelHistoryService {
       .limit(20)
       .getMany();
 
-    console.log(result);
-
     if (!result) return [];
 
     return result.map((el) => {
@@ -99,8 +97,6 @@ export class ChannelHistoryService {
       .where('channelHistory.channelId = :channelId', { channelId })
       .andWhere('channelHistory.idx = :idx', { idx: currIdx })
       .getMany();
-
-    console.log(result);
 
     return result.map((el) => {
       const { password, year, month, day, certified, deletedAt, ...writer } =

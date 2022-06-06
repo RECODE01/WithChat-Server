@@ -31,7 +31,6 @@ export class ChattingRoomInviteService {
     });
 
     if (isSent) throw new ConflictException('이미 요청된 데이터가 존재합니다.');
-    console.log(chattingServerId, targetId);
     return await this.chattingRoomInviteRepository.save({
       chattingServer: { id: chattingServerId },
       user: { id: targetId },
@@ -67,7 +66,6 @@ export class ChattingRoomInviteService {
         })
         .then((invite) => invite.chattingServer.id);
 
-      console.log(chattingRoomId, 'chattingRoomId');
       const result = await queryRunner.manager.save(ChattingServerUserDetail, {
         master: { id: chattingRoomId },
         user: { id: currentUser.id },

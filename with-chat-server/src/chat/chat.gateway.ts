@@ -19,7 +19,6 @@ export class ChatGateway {
   @SubscribeMessage('join')
   connectSomeone(@MessageBody() data) {
     const [user, channelId] = data;
-    console.log(`${user}님이 코드: ${channelId}방에 접속했습니다.`);
     const comeOn = `${user}님이 입장했습니다.`;
     this.server.emit('comeOn' + channelId, comeOn);
   }
@@ -28,12 +27,14 @@ export class ChatGateway {
     return client;
   }
 
+  @SubscribeMessage('message')
+  sendMessage2(@MessageBody() data: string, @ConnectedSocket() client: Socket) {
+    console.log(data);
+  }
+
   @SubscribeMessage('send')
   sendMessage(@MessageBody() data: string, @ConnectedSocket() client: Socket) {
-    console.log(data);
     const [user, channelId, contents] = data;
-    console.log(`${client.id} : ${data}`);
-    console.log('broadcast.emit');
     client.broadcast.emit('message' + channelId, [user, contents]);
   }
 }

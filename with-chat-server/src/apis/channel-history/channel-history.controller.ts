@@ -78,7 +78,6 @@ export class ChannelHistoryController {
     @Query('channelId') channelId: string,
     @CurrentUser() currentUser,
   ) {
-    console.log(lastIdx, channelId);
     return this.channelHistoryService
       .getChannelHistory(lastIdx, channelId)
       .then((result) => {

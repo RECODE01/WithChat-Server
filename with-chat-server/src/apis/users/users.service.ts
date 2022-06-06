@@ -53,7 +53,6 @@ export class UsersService {
     try {
       // const result = this.userRepository.save({ ...createUserDto });
       const salt = await bcrypt.genSalt();
-      console.log(salt);
 
       const user = new User();
       user.email = createUserDto.email;
@@ -181,7 +180,6 @@ export class UsersService {
       inviteList,
       serverList,
     ]).then((values) => {
-      console.log(values[3], '===================');
       return {
         user: values[0],
         friendList: values[1],
@@ -215,7 +213,6 @@ export class UsersService {
     const user = await this.userRepository.findOne({
       where: { email: email },
     });
-    console.log(user);
     return user !== null;
   };
 
@@ -303,8 +300,6 @@ export class UsersService {
       { ...updateUserDto },
     );
 
-    console.log(updateUserDto);
-    console.log(result, 'result');
     if (result.affected < 0) throw new ConflictException('회원정보 수정 실패');
 
     return this.userRepository.findOne({ where: { id: currentUser.id } });
@@ -347,7 +342,6 @@ export class UsersService {
           };
         });
     });
-    console.log(result);
     return result;
   }
 }

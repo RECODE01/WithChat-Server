@@ -67,7 +67,6 @@ export class ChattingServerService {
       })
       .getMany();
 
-    console.log(result);
     return result;
   }
 
@@ -146,7 +145,6 @@ export class ChattingServerService {
       users: users,
       channels: result.channels,
     };
-    console.log(returnVal);
 
     return returnVal;
   }
