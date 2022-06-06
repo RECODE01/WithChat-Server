@@ -14,7 +14,7 @@ import {
 } from './entities/chatting-server.entity';
 
 @Injectable()
-export class ChattingRoomService {
+export class ChattingServerService {
   constructor(
     @InjectRepository(ChattingServer)
     private readonly chattingServerRepository: Repository<ChattingServer>,
@@ -58,7 +58,7 @@ export class ChattingRoomService {
     }
   }
 
-  async fetchMyChattingRoom(currentUser: ICurrentUser) {
+  async fetchMyChattingServer(currentUser: ICurrentUser) {
     const result = await this.chattingServerRepository
       .createQueryBuilder('chattingRoom')
       .leftJoin('chattingRoom.users', 'chattingRoomUserDetail')

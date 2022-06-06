@@ -84,7 +84,7 @@ export class ChannelHistoryController {
       .then((result) => {
         res.status(HttpStatus.OK).json({
           success: true,
-          nextIdx: result[result.length - 1].idx,
+          nextIdx: result.length > 0 ? result[result.length - 1].idx : -1,
           message: result,
         });
       });
