@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Console } from 'console';
 import { ChatGateway } from 'src/chat/chat.gateway';
 import { Connection, Repository } from 'typeorm';
 import { ICurrentUser } from '../auth/gql-user.param';
@@ -26,6 +27,9 @@ export class ChannelHistoryService {
     await queryRunner.connect();
     await queryRunner.startTransaction('SERIALIZABLE');
     try {
+      const user = await queryRunner.manager.findOne(User, {
+        where: { id: currentUser.id },
+      });
       const lastMessage = await queryRunner.manager
         .createQueryBuilder(ChannelHistory, 'channelHistory')
         .orderBy('channelHistory.createdAt', 'DESC')
@@ -33,23 +37,25 @@ export class ChannelHistoryService {
         .then((res) => res);
 
       const prevIdx = lastMessage ? lastMessage.idx : 1;
-
+      const { password, year, month, day, certified, deletedAt, ...writer } =
+        user;
       for (let i = 0; i < createChannelHistoryDto.messages.length; i++) {
-        await queryRunner.manager.save(ChannelHistory, {
+        const message = await queryRunner.manager.save(ChannelHistory, {
           idx: prevIdx + 1,
-          writer: { id: currentUser.id },
+          writer,
           channel: { id: createChannelHistoryDto.channelId },
           type: createChannelHistoryDto.messages[i].type,
           contents: createChannelHistoryDto.messages[i].contents,
         });
+        const { channel, ...data } = message;
+        const result = {
+          ...data,
+          writer,
+        };
+        this.chatGateway.server.emit(createChannelHistoryDto.channelId, result);
       }
 
       await queryRunner.commitTransaction();
-      this.chatGateway.server.emit('message', [
-        currentUser.id,
-        createChannelHistoryDto.channelId,
-        createChannelHistoryDto.messages[0].contents,
-      ]);
       return true;
     } catch (error) {
       await queryRunner.rollbackTransaction();
@@ -73,11 +79,13 @@ export class ChannelHistoryService {
 
     if (!result) return [];
 
-    return result.map((el) => {
-      const { password, year, month, day, certified, deletedAt, ...writer } =
-        el.writer;
-      return { ...el, writer: writer };
-    });
+    return result
+      .map((el) => {
+        const { password, year, month, day, certified, deletedAt, ...writer } =
+          el.writer;
+        return { ...el, writer: writer };
+      })
+      .reverse();
   }
 
   async getNewChatting(channelId: string) {

@@ -10,7 +10,6 @@ export interface ICurrentUser {
 export const CurrentUser = createParamDecorator(
   (_: any, context: ExecutionContext): ICurrentUser => {
     const req = context.switchToHttp().getRequest();
-    console.log(req.user);
     return req.user;
   },
 );
