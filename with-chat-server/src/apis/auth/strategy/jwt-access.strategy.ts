@@ -13,15 +13,8 @@ export class jwtAccessStrategy extends PassportStrategy(Strategy, 'access') {
   }
 
   async validate(_, payload) {
-    // console.log(payload);
     if (payload.exp < new Date().getTime() / 1000)
       throw new UnauthorizedException('만료된 토큰입니다.');
-    console.log({
-      id: payload.id,
-      email: payload.email,
-      sub: payload.sub,
-      exp: payload.exp,
-    });
     return {
       id: payload.id,
       email: payload.email,
